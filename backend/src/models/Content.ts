@@ -57,6 +57,7 @@ const contentSchema = new Schema(
     public: {
       type: Boolean,
       required: true,
+      default: false,
       index: true,
     },
     metadata: {
