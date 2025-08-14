@@ -8,6 +8,7 @@ import cors from "cors";
 import connectDB from "./config/db";
 import userAuthRoutes from "./routes/userAuthRoutes";
 import errorHandler from "./middleware/errorHandler";
+import userRoutes from "./routes/userRoutes";
 
 const app = express();
 
@@ -17,6 +18,7 @@ app.use(express.json());
 
 // Routes
 app.use("/api/v1/user", userAuthRoutes);
+app.use("/api/v1/user", userRoutes);
 
 // Default Route
 app.get("/", (req, res) => {
