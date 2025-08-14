@@ -7,6 +7,7 @@ import express from "express";
 import cors from "cors";
 import connectDB from "./config/db";
 import userAuthRoutes from "./routes/userAuthRoutes";
+import errorHandler from "./middleware/errorHandler";
 
 const app = express();
 
@@ -21,6 +22,9 @@ app.use("/api/v1/user", userAuthRoutes);
 app.get("/", (req, res) => {
   res.send("Welcome to MindVault API!");
 });
+
+// Error Handler
+app.use(errorHandler);
 
 // Start server
 async function startServer() {
