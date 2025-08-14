@@ -28,7 +28,12 @@ const emailSchema = z
 
 export const loginSchema = z.object({
   identifier: z.union([usernameSchema, emailSchema]),
-  password: z.string({ required_error: "Password is required" }),
+  password: z.string({
+    error: (issue) =>
+      issue.input === undefined
+        ? "Password  is required"
+        : "Password should be a valid string",
+  }),
 });
 
 // <-- Content Schema -->
@@ -58,7 +63,12 @@ export const contentSchema = z.object({
     .min(3, { message: "Title must be at least 3 characters long" })
     .max(200, { message: "Title must not exceed 200 characters" }),
   link: z
-    .string({ required_error: "Link is required" })
+    .string({
+      error: (issue) =>
+        issue.input === undefined
+          ? "Link is required"
+          : "Link should be a valid string",
+    })
     .trim()
     .pipe(z.url({ message: "Invalid URL" })),
   type: ContentTypeEnum,
@@ -72,7 +82,10 @@ export const contentSchema = z.object({
     .array(z.string().min(1, { message: "Tag cannot be empty." }).trim())
     .min(1, { message: "At least one tag is required." }),
   public: z.boolean({
-    required_error: "Public status is required.",
+    error: (issue) =>
+      issue.input === undefined
+        ? "public is required"
+        : "public should be a valid string",
   }),
   metadata: metadataSchema,
   embedding: z.array(z.number()).optional(),
