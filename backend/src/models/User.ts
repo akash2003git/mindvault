@@ -4,7 +4,8 @@ import { hash, compare } from "bcrypt";
 export interface IUser {
   username: string;
   email: string;
-  password: string;
+  password?: string;
+  authProvider: "local" | "google";
 }
 
 export interface IUserMethods {
@@ -29,18 +30,29 @@ const userSchema = new Schema<IUser>({
   },
   password: {
     type: String,
-    required: true,
     minLength: 8,
     maxLength: 20,
     select: false,
+    required: function () {
+      return this.authProvider === "local";
+    },
+  },
+  authProvider: {
+    type: String,
+    enum: ["local", "google"],
+    default: "local",
   },
 });
 
 // Pre-save hook for password hashing
 userSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) return next();
-  const hashedPassword = await hash(this.password, 10);
-  this.password = hashedPassword;
+  if (
+    this.authProvider === "local" &&
+    this.isModified("password") &&
+    this.password
+  ) {
+    this.password = await hash(this.password, 10);
+  }
   next();
 });
 
@@ -48,6 +60,7 @@ userSchema.pre("save", async function (next) {
 userSchema.methods.comparePassword = async function (
   candidatePassword: string,
 ): Promise<boolean> {
+  if (!this.password) return false;
   return await compare(candidatePassword, this.password);
 };
 
