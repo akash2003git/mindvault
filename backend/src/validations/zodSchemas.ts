@@ -81,7 +81,7 @@ export const contentSchema = z.object({
   tags: z
     .array(z.string().min(1, { message: "Tag cannot be empty." }).trim())
     .min(1, { message: "At least one tag is required." }),
-  public: z.boolean({
+  publicStatus: z.boolean({
     error: (issue) =>
       issue.input === undefined
         ? "public is required"

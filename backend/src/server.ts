@@ -10,6 +10,8 @@ import userAuthRoutes from "./routes/userAuthRoutes";
 import errorHandler from "./middleware/errorHandler";
 import userRoutes from "./routes/userRoutes";
 import oauthRoutes from "./routes/oauthRoutes";
+import contentRoutes from "./routes/contentRoutes";
+import tagRoutes from "./routes/tagRoutes";
 
 const app = express();
 
@@ -21,6 +23,8 @@ app.use(express.json());
 app.use("/api/v1/auth", oauthRoutes);
 app.use("/api/v1/user", userAuthRoutes);
 app.use("/api/v1/user", userRoutes);
+app.use("/api/v1/content", contentRoutes);
+app.use("/api/v1/tags", tagRoutes);
 
 // Default Route
 app.get("/", (req, res) => {

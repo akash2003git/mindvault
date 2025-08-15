@@ -1,5 +1,5 @@
 import passport from "passport";
-import { Strategy as GoogleStrategy, Profile } from "passport-google-oauth20";
+import { Strategy, Profile } from "passport-google-oauth20";
 import User from "../models/User";
 import {
   GOOGLE_CLIENT_ID,
@@ -8,7 +8,7 @@ import {
 } from "./env";
 
 passport.use(
-  new GoogleStrategy(
+  new Strategy(
     {
       clientID: GOOGLE_CLIENT_ID,
       clientSecret: GOOGLE_CLIENT_SECRET,
@@ -54,18 +54,5 @@ passport.use(
     },
   ),
 );
-
-passport.serializeUser((user: any, done) => {
-  done(null, user.id);
-});
-
-passport.deserializeUser(async (id: string, done) => {
-  try {
-    const user = await User.findById(id);
-    done(null, user);
-  } catch (err) {
-    done(err as Error, null);
-  }
-});
 
 export default passport;

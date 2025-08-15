@@ -4,10 +4,10 @@ export interface IContent {
   userId: Types.ObjectId;
   title: string;
   link: string;
-  type: string[];
+  type: string;
   description?: string;
   tags: Types.ObjectId[];
-  public: boolean;
+  publicStatus: boolean;
   metadata?: {
     title?: string;
     description?: string;
@@ -54,7 +54,7 @@ const contentSchema = new Schema(
       minLength: 3,
     },
     tags: [{ type: Schema.Types.ObjectId, ref: "Tag", required: true }],
-    public: {
+    publicStatus: {
       type: Boolean,
       required: true,
       default: false,

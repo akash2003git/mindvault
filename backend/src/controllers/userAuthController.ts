@@ -1,5 +1,5 @@
 import User, { UserDocument } from "../models/User";
-import { sign, verify } from "jsonwebtoken";
+import { sign } from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
 import { loginSchema, signupSchema } from "../validations/zodSchemas";
 import { z } from "zod";
