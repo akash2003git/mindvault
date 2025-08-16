@@ -62,15 +62,7 @@ export const contentSchema = z.object({
     .string()
     .min(3, { message: "Title must be at least 3 characters long" })
     .max(200, { message: "Title must not exceed 200 characters" }),
-  link: z
-    .string({
-      error: (issue) =>
-        issue.input === undefined
-          ? "Link is required"
-          : "Link should be a valid string",
-    })
-    .trim()
-    .pipe(z.url({ message: "Invalid URL" })),
+  link: z.url({ message: "Invalid URL" }),
   type: ContentTypeEnum,
   description: z
     .string()

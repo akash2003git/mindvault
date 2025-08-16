@@ -12,6 +12,7 @@ import userRoutes from "./routes/userRoutes";
 import oauthRoutes from "./routes/oauthRoutes";
 import contentRoutes from "./routes/contentRoutes";
 import tagRoutes from "./routes/tagRoutes";
+import shareRoutes from "./routes/shareRoutes";
 
 const app = express();
 
@@ -25,6 +26,7 @@ app.use("/api/v1/user", userAuthRoutes);
 app.use("/api/v1/user", userRoutes);
 app.use("/api/v1/content", contentRoutes);
 app.use("/api/v1/tags", tagRoutes);
+app.use("/api/v1/share", shareRoutes);
 
 // Default Route
 app.get("/", (req, res) => {
