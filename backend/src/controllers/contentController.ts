@@ -4,6 +4,8 @@ import { contentSchema } from "../validations/zodSchemas";
 import z from "zod";
 import { findOrCreateTagIds } from "../utils/tagHelper";
 import { Types } from "mongoose";
+import { generateContentEmbedding } from "../utils/aiService";
+import Tag from "../models/Tag";
 
 export async function addContent(
   req: Request,
@@ -19,16 +21,15 @@ export async function addContent(
         errors: z.flattenError(validationResult.error).fieldErrors,
       });
     }
-    const {
+    const { title, link, type, description, tags, publicStatus } =
+      validationResult.data;
+
+    const embedding = await generateContentEmbedding({
       title,
-      link,
-      type,
       description,
+      type,
       tags,
-      publicStatus,
-      metadata,
-      embedding,
-    } = validationResult.data;
+    });
 
     const { userId } = req;
     const tagIdArr = await findOrCreateTagIds(tags);
@@ -41,13 +42,16 @@ export async function addContent(
       description,
       tags: tagIdArr,
       publicStatus,
-      metadata,
       embedding,
     });
 
-    res
-      .status(201)
-      .json({ message: "Content added successfully!", newContent });
+    // No need of sending huge embedding array in response
+    const { embedding: _, ...contentWithoutEmbedding } = newContent.toObject();
+
+    res.status(201).json({
+      message: "Content added successfully!",
+      newContent: contentWithoutEmbedding,
+    });
   } catch (error) {
     console.error("Error while adding content:", error);
     next(error);
@@ -147,10 +151,35 @@ export async function updateContent(
     }
 
     Object.assign(targetContent, updates);
+
+    // Decide if embedding needs to be recomputed
+    const recomputeEmbedding =
+      updates.title || updates.description || updates.type || updates.tags;
+
+    if (recomputeEmbedding) {
+      const tagDocs = await Tag.find({ _id: { $in: targetContent.tags } });
+      const tagNames = tagDocs.map((tag) => tag.title);
+
+      const embeddableForUpdate = {
+        title: targetContent.title,
+        description: targetContent.description,
+        type: targetContent.type,
+        tags: tagNames,
+      };
+
+      targetContent.embedding =
+        await generateContentEmbedding(embeddableForUpdate);
+    }
+
     await targetContent.save();
+    await targetContent.populate("tags");
+
+    const { embedding: _, ...contentWithoutEmbedding } =
+      targetContent.toObject();
+
     res.status(200).json({
       message: "Content updated successfully",
-      updatedContent: targetContent,
+      updatedContent: contentWithoutEmbedding,
     });
   } catch (error) {
     console.error("Error updating content:", error);

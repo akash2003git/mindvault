@@ -49,14 +49,6 @@ export const ContentTypeEnum = z.enum([
   "other",
 ]);
 
-const metadataSchema = z
-  .object({
-    title: z.string().optional(),
-    description: z.string().optional(),
-    thumbnail: z.url("Invalid thumbnail URL format").optional(),
-  })
-  .optional();
-
 export const contentSchema = z.object({
   title: z
     .string()
@@ -79,6 +71,5 @@ export const contentSchema = z.object({
         ? "public is required"
         : "public should be a valid string",
   }),
-  metadata: metadataSchema,
   embedding: z.array(z.number()).optional(),
 });

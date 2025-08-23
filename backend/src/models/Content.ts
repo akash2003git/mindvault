@@ -8,11 +8,6 @@ export interface IContent {
   description?: string;
   tags: Types.ObjectId[];
   publicStatus: boolean;
-  metadata?: {
-    title?: string;
-    description?: string;
-    thumbnail?: string;
-  };
   embedding?: number[];
 }
 
@@ -58,11 +53,6 @@ const contentSchema = new Schema(
       required: true,
       default: false,
       index: true,
-    },
-    metadata: {
-      title: String,
-      description: String,
-      thumbnail: String,
     },
     embedding: { type: [Number], default: [] }, // placeholder for AI
   },

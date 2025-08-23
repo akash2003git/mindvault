@@ -5,6 +5,7 @@ import {
   EMBEDDING_MODEL_NAME,
   GEMINI_TEXT_MODEL_NAME,
 } from "../config/env";
+import { IContent } from "../models/Content";
 
 const MAX_RETRIES = 5;
 const INITIAL_BACKOFF_DELAY = 1000; // 1 second
@@ -36,7 +37,7 @@ async function exponentialBackoff<T>(
 }
 
 /**
- * Generates an embedding for a given text using a dedicated embedding model (e.g., gemini-embedding-001).
+ * Generates an embedding for a given text using a dedicated embedding model.
  * @param text The input text to embed.
  * @returns A Promise that resolves to an array of numbers (the embedding vector).
  */
@@ -47,7 +48,7 @@ export async function getEmbedding(text: string): Promise<number[]> {
   }
 
   const payload = {
-    model: EMBEDDING_MODEL_NAME, // e.g. "models/embedding-001"
+    model: EMBEDDING_MODEL_NAME,
     content: {
       parts: [{ text }],
     },
@@ -176,4 +177,29 @@ export async function generateTextFromContext(
   };
 
   return exponentialBackoff(callApi, MAX_RETRIES, INITIAL_BACKOFF_DELAY);
+}
+
+export interface embeddableContentObj {
+  title?: string;
+  type?: string;
+  description?: string;
+  tags?: string[];
+}
+
+export async function generateContentEmbedding(
+  content: embeddableContentObj,
+): Promise<number[]> {
+  const parts: string[] = [];
+
+  if (content.title) parts.push(content.title);
+  if (content.description) parts.push(content.description);
+  if (content.type) parts.push(`Type: ${content.type}`);
+  if (content.tags) {
+    const tagString = content.tags.join(", ");
+    parts.push(`Tags: ${tagString}`);
+  }
+
+  const textForEmbedding = parts.join(". ");
+  // console.log(textForEmbedding);
+  return await getEmbedding(textForEmbedding);
 }
