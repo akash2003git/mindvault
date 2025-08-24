@@ -219,3 +219,55 @@ export async function deleteContent(
     next(error);
   }
 }
+
+export async function searchContent(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const { query, limit = 10 } = req.body;
+    const { userId } = req;
+
+    if (!query || typeof query !== "string") {
+      return res.status(400).json({ message: "Query must be a string" });
+    }
+
+    // 1️⃣ Generate embedding for the query
+    const queryEmbedding = await generateContentEmbedding({ title: query });
+
+    // 2️⃣ Run vector search
+    const results = await Content.aggregate([
+      {
+        $vectorSearch: {
+          index: "vector_index", // Atlas Search index name
+          path: "embedding",
+          queryVector: queryEmbedding,
+          numCandidates: 100,
+          limit,
+          filter: {
+            $or: [
+              { userId }, // show own private content
+              { publicStatus: true }, // show public content
+            ],
+          },
+        },
+      },
+      {
+        $project: {
+          title: 1,
+          description: 1,
+          type: 1,
+          tags: 1,
+          publicStatus: 1,
+          score: { $meta: "vectorSearchScore" },
+        },
+      },
+    ]);
+
+    res.json({ results });
+  } catch (error) {
+    console.error("Error searching content:", error);
+    next(error);
+  }
+}

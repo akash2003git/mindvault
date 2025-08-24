@@ -5,6 +5,7 @@ import {
   getContentById,
   updateContent,
   deleteContent,
+  searchContent,
 } from "../controllers/contentController";
 import { authenticateUser } from "../middleware/authMiddleware";
 
@@ -20,5 +21,7 @@ router
   .get(authenticateUser, getContentById)
   .put(authenticateUser, updateContent)
   .delete(authenticateUser, deleteContent);
+
+router.post("/search", searchContent);
 
 export default router;
