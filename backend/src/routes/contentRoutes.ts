@@ -22,6 +22,6 @@ router
   .put(authenticateUser, updateContent)
   .delete(authenticateUser, deleteContent);
 
-router.post("/search", searchContent);
+router.post("/search", authenticateUser, searchContent);
 
 export default router;

@@ -2,11 +2,20 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import mongoose from "mongoose";
-import User from "../models/User";
+import User, { UserDocument } from "../models/User";
 import Content from "../models/Content";
 import { findOrCreateTagIds } from "../utils/tagHelper";
 import { generateContentEmbedding } from "../utils/aiService";
 import connectDB from "../config/db";
+
+// Define a type for content items
+interface ContentItem {
+  title: string;
+  description: string;
+  type: string;
+  tags: string[];
+  link?: string;
+}
 
 async function seed() {
   await connectDB();
@@ -17,7 +26,8 @@ async function seed() {
   console.log("Cleared old users and content");
 
   // Create 2 users
-  const users = await User.create([
+
+  const users = (await User.create([
     {
       username: "alice",
       email: "alice@example.com",
@@ -30,15 +40,15 @@ async function seed() {
       password: "password123",
       authProvider: "local",
     },
-  ]);
+  ])) as UserDocument[]; // <-- cast to UserDocument[]
 
   console.log(
     "Users created:",
     users.map((u) => u.username),
   );
 
-  // Sample content pool (mix of overlapping topics + distinct ones)
-  const sampleContents = [
+  // Alice's AI/ML content
+  const aliceContents: ContentItem[] = [
     {
       title: "Deep Learning for Image Segmentation",
       link: "https://arxiv.org/abs/1706.05587",
@@ -53,41 +63,10 @@ async function seed() {
       tags: ["transformer", "ViT", "computer vision"],
     },
     {
-      title: "Convolutional Neural Networks Explained",
-      type: "article",
-      description: "Basics of CNNs for beginners in deep learning.",
-      tags: ["deep learning", "CNNs", "introduction"],
-    },
-    {
-      title: "Stable Diffusion: Text-to-Image Models",
-      type: "article",
-      description: "How diffusion models generate images from text prompts.",
-      tags: ["diffusion models", "generative AI", "computer vision"],
-    },
-    {
-      title: "A Beginner's Guide to Semantic Search",
-      type: "article",
-      description: "Explains how vector embeddings enable semantic search.",
-      tags: ["semantic search", "embeddings", "NLP"],
-    },
-    {
       title: "Fine-tuning BERT for Question Answering",
       type: "article",
       description: "Steps to adapt BERT for QA tasks on SQuAD dataset.",
       tags: ["NLP", "BERT", "fine-tuning"],
-    },
-    {
-      title: "CLIP: Connecting Vision and Language",
-      type: "article",
-      description:
-        "CLIP learns joint vision-language representations from internet data.",
-      tags: ["CLIP", "multimodal", "embeddings"],
-    },
-    {
-      title: "Reinforcement Learning Basics",
-      type: "article",
-      description: "Intro to RL concepts: agents, environments, rewards.",
-      tags: ["RL", "reinforcement learning", "AI basics"],
     },
     {
       title: "Graph Neural Networks Overview",
@@ -96,18 +75,54 @@ async function seed() {
       tags: ["graph neural networks", "deep learning"],
     },
     {
-      title: "Large Language Models and Prompting",
+      title: "Reinforcement Learning Basics",
       type: "article",
-      description: "Discussion of GPT-style models and prompt engineering.",
-      tags: ["LLMs", "prompt engineering", "NLP"],
+      description: "Intro to RL concepts: agents, environments, rewards.",
+      tags: ["RL", "reinforcement learning", "AI basics"],
     },
   ];
 
-  // Assign contents to both users (each gets all 10 for good overlap)
-  for (const user of users) {
-    for (const item of sampleContents) {
-      const tagIds = await findOrCreateTagIds(item.tags);
+  // Bob's random content
+  const bobContents: ContentItem[] = [
+    {
+      title: "Top 10 Chill Music Tracks",
+      type: "article",
+      description: "A curated list of relaxing music for study or work.",
+      tags: ["music", "relaxing", "playlist"],
+    },
+    {
+      title: "Funny Cat Videos Compilation",
+      type: "video",
+      description: "A compilation of hilarious cat moments.",
+      tags: ["funny", "cats", "videos"],
+    },
+    {
+      title: "Epic Video Edits for Social Media",
+      type: "video",
+      description:
+        "Creative video editing techniques for Instagram and TikTok.",
+      tags: ["video editing", "social media", "creative"],
+    },
+    {
+      title: "Top 5 Street Performances",
+      type: "article",
+      description: "Amazing street performances from around the world.",
+      tags: ["street performers", "music", "entertainment"],
+    },
+    {
+      title: "DIY Home Decor Ideas",
+      type: "article",
+      description: "Simple DIY ideas to spruce up your living space.",
+      tags: ["DIY", "home decor", "creative"],
+    },
+  ];
 
+  async function createUserContent(
+    user: UserDocument,
+    contentArray: ContentItem[],
+  ) {
+    for (const item of contentArray) {
+      const tagIds = await findOrCreateTagIds(item.tags);
       const embedding = await generateContentEmbedding({
         title: item.title,
         description: item.description,
@@ -116,7 +131,7 @@ async function seed() {
       });
 
       await Content.create({
-        userId: user._id,
+        userId: user._id, // now TypeScript knows _id exists
         title: item.title,
         link: item.link,
         type: item.type,
@@ -127,6 +142,10 @@ async function seed() {
       });
     }
   }
+
+  // Seed content
+  await createUserContent(users[0], aliceContents);
+  await createUserContent(users[1], bobContents);
 
   console.log("Seed data created successfully ✅");
   await mongoose.disconnect();

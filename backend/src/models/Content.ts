@@ -39,6 +39,7 @@ const contentSchema = new Schema(
         "code",
         "notion",
         "article",
+        "video",
         "other",
       ],
       required: true,

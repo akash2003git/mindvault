@@ -46,6 +46,7 @@ export const ContentTypeEnum = z.enum([
   "code",
   "notion",
   "article",
+  "video",
   "other",
 ]);
 
@@ -72,4 +73,18 @@ export const contentSchema = z.object({
         : "public should be a valid string",
   }),
   embedding: z.array(z.number()).optional(),
+});
+
+// <-- Search Schema -->
+export const searchSchema = z.object({
+  query: z
+    .string()
+    .min(3, { message: "Query must be at least 3 characters long." }),
+  limit: z
+    .number()
+    .int()
+    .min(1, { message: "Limit must be at least 1." })
+    .max(50, { message: "Limit cannot exceed 50." })
+    .default(10),
+  mode: z.enum(["semantic", "keyword"]).default("semantic"),
 });

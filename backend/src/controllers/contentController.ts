@@ -1,10 +1,10 @@
 import { Request, Response, NextFunction } from "express";
 import Content from "../models/Content";
-import { contentSchema } from "../validations/zodSchemas";
+import { searchSchema, contentSchema } from "../validations/zodSchemas";
 import z from "zod";
 import { findOrCreateTagIds } from "../utils/tagHelper";
 import { Types } from "mongoose";
-import { generateContentEmbedding } from "../utils/aiService";
+import { getEmbedding, generateContentEmbedding } from "../utils/aiService";
 import Tag from "../models/Tag";
 
 export async function addContent(
@@ -226,46 +226,118 @@ export async function searchContent(
   next: NextFunction,
 ) {
   try {
-    const { query, limit = 10 } = req.body;
-    const { userId } = req;
-
-    if (!query || typeof query !== "string") {
-      return res.status(400).json({ message: "Query must be a string" });
+    // --- Zod validation ---
+    const validationResult = searchSchema.safeParse(req.body);
+    if (!validationResult.success) {
+      return res.status(400).json({
+        message: "Validation failed",
+        errors: validationResult.error.flatten().fieldErrors,
+      });
     }
 
-    // 1️⃣ Generate embedding for the query
-    const queryEmbedding = await generateContentEmbedding({ title: query });
+    const { query, limit = 10, mode } = validationResult.data;
+    const { userId } = req;
 
-    // 2️⃣ Run vector search
-    const results = await Content.aggregate([
-      {
-        $vectorSearch: {
-          index: "vector_index", // Atlas Search index name
-          path: "embedding",
-          queryVector: queryEmbedding,
-          numCandidates: 100,
-          limit,
-          filter: {
-            $or: [
-              { userId }, // show own private content
-              { publicStatus: true }, // show public content
-            ],
+    let results;
+
+    // Common projections
+    const commonProjectFields = {
+      _id: 1,
+      title: 1,
+      description: 1,
+      type: 1,
+      tags: 1,
+      publicStatus: 1,
+      link: 1,
+      metadata: 1,
+      createdAt: 1,
+      updatedAt: 1,
+    };
+
+    const tagsLookupStage = {
+      $lookup: {
+        from: "tags",
+        localField: "tags",
+        foreignField: "_id",
+        as: "tags",
+      },
+    };
+
+    if (mode === "semantic") {
+      const queryEmbedding = await getEmbedding(query);
+
+      if (!queryEmbedding || queryEmbedding.length === 0) {
+        return res
+          .status(500)
+          .json({ message: "Failed to generate embedding for search query." });
+      }
+
+      results = await Content.aggregate([
+        {
+          $vectorSearch: {
+            index: "vector_index",
+            path: "embedding",
+            queryVector: queryEmbedding,
+            numCandidates: 100,
+            limit,
+            filter: {
+              userId: new Types.ObjectId(userId),
+            },
           },
         },
-      },
-      {
-        $project: {
-          title: 1,
-          description: 1,
-          type: 1,
-          tags: 1,
-          publicStatus: 1,
-          score: { $meta: "vectorSearchScore" },
+        {
+          $project: {
+            ...commonProjectFields,
+            score: { $meta: "vectorSearchScore" },
+          },
         },
-      },
-    ]);
+        tagsLookupStage,
+      ]);
+    } else if (mode === "keyword") {
+      results = await Content.aggregate([
+        {
+          $search: {
+            index: "keyword_index",
+            compound: {
+              should: [
+                {
+                  text: {
+                    query,
+                    path: "title",
+                    score: { boost: { value: 3 } },
+                    fuzzy: { maxEdits: 1, prefixLength: 2 },
+                  },
+                },
+                {
+                  text: {
+                    query,
+                    path: "description",
+                    score: { boost: { value: 1 } },
+                    fuzzy: { maxEdits: 1, prefixLength: 2 },
+                  },
+                },
+              ],
+            },
+          },
+        },
+        {
+          $match: { userId: new Types.ObjectId(userId) },
+        },
+        { $limit: limit },
+        {
+          $project: {
+            ...commonProjectFields,
+            score: { $meta: "searchScore" },
+          },
+        },
+        tagsLookupStage,
+      ]);
+    }
 
-    res.json({ results });
+    return res.json({
+      message: "Search completed successfully",
+      results,
+    });
   } catch (error) {
     console.error("Error searching content:", error);
     next(error);
