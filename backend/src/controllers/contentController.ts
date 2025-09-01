@@ -219,3 +219,26 @@ export async function deleteContent(
     next(error);
   }
 }
+
+export async function saveAINote(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const { title, body, tags } = req.body;
+    const notePayload = {
+      title,
+      description: body,
+      type: "note",
+      link: undefined,
+      tags: tags || [],
+      publicStatus: false,
+    };
+    // call addContent but with the new payload
+    const fakeReq = { ...req, body: notePayload };
+    return addContent(fakeReq as Request, res, next);
+  } catch (err) {
+    next(err);
+  }
+}

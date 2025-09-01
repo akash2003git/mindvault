@@ -5,6 +5,7 @@ import {
   getContentById,
   updateContent,
   deleteContent,
+  saveAINote,
 } from "../controllers/contentController";
 import { searchContent } from "../controllers/searchContentController";
 import { ragQuery } from "../controllers/ragQuery";
@@ -25,5 +26,6 @@ router
 
 router.post("/search", authenticateUser, searchContent);
 router.post("/rag-query", authenticateUser, ragQuery);
+router.post("/save-ai-note", authenticateUser, saveAINote);
 
 export default router;

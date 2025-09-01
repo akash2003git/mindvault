@@ -47,6 +47,7 @@ export const ContentTypeEnum = z.enum([
   "notion",
   "article",
   "video",
+  "note",
   "other",
 ]);
 
@@ -55,7 +56,7 @@ export const contentSchema = z.object({
     .string()
     .min(3, { message: "Title must be at least 3 characters long" })
     .max(200, { message: "Title must not exceed 200 characters" }),
-  link: z.url({ message: "Invalid URL" }),
+  link: z.url({ message: "Invalid URL" }).optional(),
   type: ContentTypeEnum,
   description: z
     .string()

@@ -1,3 +1,4 @@
+// src/controllers/ragController.ts
 import { Request, Response, NextFunction } from "express";
 import Content from "../models/Content";
 import { Types } from "mongoose";
@@ -16,14 +17,14 @@ export async function ragQuery(
       return res.status(400).json({ message: "Prompt is required." });
     }
 
-    // Step 1. Generate embedding for the prompt
+    // Step 1: Get embedding for the question
     const queryEmbedding = await getEmbedding(prompt);
     if (!queryEmbedding || queryEmbedding.length === 0) {
       return res.status(500).json({ message: "Failed to generate embedding." });
     }
 
-    // Step 2. Retrieve relevant documents (vector search)
-    const relevantContent = await Content.aggregate([
+    // Step 2: Retrieve content
+    const retrieved = await Content.aggregate([
       {
         $vectorSearch: {
           index: "vector_index",
@@ -47,31 +48,47 @@ export async function ragQuery(
       },
     ]);
 
-    // Step 3. Combine retrieved docs into context text
+    // Step 3: Filter by a relevance threshold
+    const MIN_SCORE = 0.75; // adjust as you wish
+    const relevantContent = retrieved.filter((doc) => doc.score >= MIN_SCORE);
+
+    // Step 4: Build context (if any)
     const contextText = relevantContent
       .map((doc, i) => {
-        const parts: string[] = [];
-        if (doc.title) parts.push(`Title: ${doc.title}`);
-        if (doc.description) parts.push(`Description: ${doc.description}`);
-        if (doc.link) parts.push(`Link: ${doc.link}`);
-        if (doc.type) parts.push(`Type: ${doc.type}`);
-        return `Result ${i + 1}: ${parts.join("\n")}`;
+        const lines: string[] = [];
+        if (doc.title) lines.push(`Title: ${doc.title}`);
+        if (doc.description) lines.push(`Description: ${doc.description}`);
+        if (doc.link) lines.push(`Link: ${doc.link}`);
+        if (doc.type) lines.push(`Type: ${doc.type}`);
+        return `Source ${i + 1}:\n${lines.join("\n")}`;
       })
       .join("\n\n");
 
-    // Step 4. Generate AI response with context
-    const aiAnswer = await generateTextFromContext(prompt, contextText, {
-      mode,
-    });
+    // Step 5: Decide how to call the AI
+    let aiAnswer: string;
+    if (relevantContent.length > 0) {
+      // Normal RAG flow
+      aiAnswer = await generateTextFromContext(prompt, contextText, { mode });
+    } else {
+      // Fallback: no context, pure knowledge
+      aiAnswer = await generateTextFromContext(
+        `No relevant user content was found for this question. Please answer using your own knowledge.\nQuestion: ${prompt}`,
+        "",
+        { mode: "context+knowledge" }, // context empty means "just answer"
+      );
+    }
 
-    // Step 5. Return AI answer + supporting content
     return res.json({
       message: "RAG query completed successfully",
       answer: aiAnswer,
-      sources: relevantContent,
+      sources: relevantContent, // might be empty
+      meta: {
+        usedContext: relevantContent.length > 0,
+        contentChecked: retrieved.length,
+      },
     });
-  } catch (error) {
-    console.error("Error performing RAG query:", error);
-    next(error);
+  } catch (err) {
+    console.error("Error performing RAG query:", err);
+    next(err);
   }
 }
