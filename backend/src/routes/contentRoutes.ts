@@ -5,8 +5,9 @@ import {
   getContentById,
   updateContent,
   deleteContent,
-  searchContent,
 } from "../controllers/contentController";
+import { searchContent } from "../controllers/searchContentController";
+import { ragQuery } from "../controllers/ragQuery";
 import { authenticateUser } from "../middleware/authMiddleware";
 
 const router = Router();
@@ -23,5 +24,6 @@ router
   .delete(authenticateUser, deleteContent);
 
 router.post("/search", authenticateUser, searchContent);
+router.post("/rag-query", authenticateUser, ragQuery);
 
 export default router;

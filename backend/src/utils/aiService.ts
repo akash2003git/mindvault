@@ -5,7 +5,6 @@ import {
   EMBEDDING_MODEL_NAME,
   GEMINI_TEXT_MODEL_NAME,
 } from "../config/env";
-import { IContent } from "../models/Content";
 
 const MAX_RETRIES = 5;
 const INITIAL_BACKOFF_DELAY = 1000; // 1 second
