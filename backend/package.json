@@ -6,6 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "ts-node-dev --respawn --transpile-only --files --watch src --poll src/server.ts",
+    "seed": "ts-node src/scripts/seed.ts",
     "build": "tsc",
     "start": "node dist/server.js"
   },
