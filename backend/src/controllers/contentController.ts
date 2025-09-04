@@ -71,7 +71,9 @@ export async function getContentById(
       return res.status(400).json({ message: "Invalid content ID format" });
     }
 
-    const content = await Content.findById(id).populate("tags");
+    const content = await Content.findById(id)
+      .populate("tags")
+      .select("-embedding");
     if (!content) {
       return res
         .status(404)
@@ -100,10 +102,47 @@ export async function getContent(
 ) {
   try {
     const { userId } = req;
-    const userContent = await Content.find({ userId }).populate("tags");
+    const userContent = await Content.find({ userId })
+      .populate("tags")
+      .select("-embedding");
     res
       .status(200)
       .json({ message: "Content fetched successfully", userContent });
+  } catch (error) {
+    console.error("Error fetching content:", error);
+    next(error);
+  }
+}
+
+export async function getFilteredContent(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const { userId } = req;
+    const { tags, type } = req.query;
+
+    const filter: any = {};
+
+    filter.userId = userId;
+
+    if (type) filter.type = type;
+
+    if (tags) {
+      const tagTitles = tags
+        .toString()
+        .split(",")
+        .map((t) => t.toLowerCase().trim());
+      const tagDocs = await Tag.find({ title: { $in: tagTitles } });
+      const tagIds = tagDocs.map((t) => t._id);
+      filter.tags = { $in: tagIds };
+    }
+
+    const content = await Content.find(filter)
+      .populate("tags")
+      .select("-embedding");
+    res.status(200).json({ message: "Content fetched successfully", content });
   } catch (error) {
     console.error("Error fetching content:", error);
     next(error);

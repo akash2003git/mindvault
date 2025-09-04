@@ -3,6 +3,7 @@ import {
   addContent,
   getContent,
   getContentById,
+  getFilteredContent,
   updateContent,
   deleteContent,
   saveAINote,
@@ -17,6 +18,8 @@ router
   .route("/")
   .post(authenticateUser, addContent)
   .get(authenticateUser, getContent);
+
+router.get("/filter", authenticateUser, getFilteredContent);
 
 router
   .route("/:id")
