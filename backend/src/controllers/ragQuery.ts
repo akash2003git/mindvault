@@ -1,4 +1,3 @@
-// src/controllers/ragController.ts
 import { Request, Response, NextFunction } from "express";
 import Content from "../models/Content";
 import { Types } from "mongoose";
@@ -49,7 +48,7 @@ export async function ragQuery(
     ]);
 
     // Step 3: Filter by a relevance threshold
-    const MIN_SCORE = 0.75; // adjust as you wish
+    const MIN_SCORE = 0.75;
     const relevantContent = retrieved.filter((doc) => doc.score >= MIN_SCORE);
 
     // Step 4: Build context (if any)
