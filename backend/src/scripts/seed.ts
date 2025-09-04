@@ -40,7 +40,7 @@ async function seed() {
       password: "password123",
       authProvider: "local",
     },
-  ])) as UserDocument[]; // <-- cast to UserDocument[]
+  ])) as UserDocument[];
 
   console.log(
     "Users created:",
@@ -131,7 +131,7 @@ async function seed() {
       });
 
       await Content.create({
-        userId: user._id, // now TypeScript knows _id exists
+        userId: user._id,
         title: item.title,
         link: item.link,
         type: item.type,
@@ -147,7 +147,7 @@ async function seed() {
   await createUserContent(users[0], aliceContents);
   await createUserContent(users[1], bobContents);
 
-  console.log("Seed data created successfully ✅");
+  console.log("Seed data created successfully");
   await mongoose.disconnect();
 }
 
