@@ -87,6 +87,7 @@ export async function importSingleContent(
     if (!original) {
       return res.status(404).json({ message: "Content not found." });
     }
+    console.log(original);
 
     if (!original.publicStatus) {
       return res.status(403).json({ message: "This content is private." });
@@ -96,17 +97,6 @@ export async function importSingleContent(
       return res
         .status(400)
         .json({ message: "You cannot import your own content." });
-    }
-
-    // Skip if user already imported same link
-    const alreadyExists = await Content.findOne({
-      userId,
-      link: original.link,
-    });
-    if (alreadyExists) {
-      return res
-        .status(200)
-        .json({ message: "Content already imported.", content: alreadyExists });
     }
 
     const cloned = await Content.create({
@@ -168,13 +158,6 @@ export async function importUserSecondBrain(
     const importedItems: any[] = [];
 
     for (const original of publicContent) {
-      const alreadyExists = await Content.findOne({
-        userId,
-        link: original.link,
-      });
-
-      if (alreadyExists) continue;
-
       const cloned = await Content.create({
         userId,
         title: original.title,
