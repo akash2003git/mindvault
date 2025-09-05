@@ -29,8 +29,8 @@ router.get(
   (req, res) => {
     const user = req.user as UserDocument;
     const token = signToken(user);
-    res.json({ token });
-    // res.redirect(`http://localhost:3000/auth/success?token=${token}`);
+    // res.json({ token });
+    res.redirect(`http://localhost:5173/auth/success?token=${token}`);
   },
 );
 
