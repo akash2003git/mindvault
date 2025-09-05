@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "../config/env";
 import { UserDocument } from "../models/User";
 import "../config/passport";
+import { FRONTEND_BASE_URL } from "../config/env";
 
 const router = Router();
 
@@ -30,7 +31,7 @@ router.get(
     const user = req.user as UserDocument;
     const token = signToken(user);
     // res.json({ token });
-    res.redirect(`http://localhost:5173/auth/success?token=${token}`);
+    res.redirect(`${FRONTEND_BASE_URL}/auth/success?token=${token}`);
   },
 );
 
