@@ -20,7 +20,6 @@ interface User {
 }
 
 // Define the type for the login/signup response
-// It now matches the backend's structure
 interface AuthResponse {
   accessToken: string;
   _id: string;
@@ -70,7 +69,6 @@ export const signupUser = async (credentials: any): Promise<AuthResponse> => {
 };
 
 // Function to get the current authenticated user's details
-// This now correctly returns the top-level user object from the API
 export const getMe = async (): Promise<User> => {
   try {
     const response = await axiosInstance.get<User>(AUTH_URLS.getMe);
