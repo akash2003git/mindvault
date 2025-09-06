@@ -25,6 +25,12 @@ const SignupPage = () => {
   const [, setUser] = useAtom(userAtom);
   const isUserAuthenticated = useAtomValue(isUserAuthenticatedAtom);
 
+  // Handle google oauth
+  const handleGoogleLogin = () => {
+    // Redirect to the backend's Google OAuth endpoint
+    window.location.href = `${import.meta.env.VITE_API_BASE_URL}/auth/google`;
+  };
+
   // Handle form submission
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -168,7 +174,10 @@ const SignupPage = () => {
         </div>
 
         {/* Google Button */}
-        <button className="cursor-pointer w-full flex items-center justify-center py-2 px-4 border border-gray-300 rounded-full shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors">
+        <button
+          onClick={handleGoogleLogin}
+          className="cursor-pointer w-full flex items-center justify-center py-2 px-4 border border-gray-300 rounded-full shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors"
+        >
           <FcGoogle className="mr-2" />
           Continue with Google
         </button>
