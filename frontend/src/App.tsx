@@ -4,8 +4,7 @@ import { jotaiStore } from "./store/store";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
 import AuthSuccessPage from "./pages/AuthSuccessPage";
-
-const LandingPage = () => <div>Landing Page with Navbar and Footer</div>;
+import LandingPage from "./pages/LandingPage";
 
 function App() {
   return (
