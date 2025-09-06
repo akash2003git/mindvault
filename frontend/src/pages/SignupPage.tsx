@@ -66,7 +66,7 @@ const SignupPage = () => {
 
   useEffect(() => {
     if (isUserAuthenticated) {
-      navigate("/");
+      navigate("/dashboard");
     }
   }, [isUserAuthenticated]);
 

@@ -28,7 +28,7 @@ const AuthSuccessPage = () => {
         setAccessToken(token);
 
         // Redirect to the home page after successful login
-        navigate("/", { replace: true });
+        navigate("/dashboard", { replace: true });
       } catch (error) {
         console.error("Failed to decode token:", error);
         // Redirect to login on token error

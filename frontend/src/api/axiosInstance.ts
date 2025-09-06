@@ -1,6 +1,4 @@
 import axios, { type AxiosInstance, type AxiosError } from "axios";
-import { jotaiStore } from "../store/store";
-import { accessTokenAtom } from "../store/atoms/authAtom";
 
 const API_BASE_URL: string =
   import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api/v1";
@@ -14,7 +12,7 @@ const api: AxiosInstance = axios.create({
 
 api.interceptors.request.use(
   (config) => {
-    const accessToken = jotaiStore.get(accessTokenAtom);
+    const accessToken = localStorage.getItem("accessToken");
 
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;

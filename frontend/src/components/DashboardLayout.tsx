@@ -1,22 +1,36 @@
+import { useState } from "react";
 import { Outlet } from "react-router-dom";
+import { Menu } from "lucide-react";
+import Sidebar from "./Sidebar";
 
-const DashboardLayout = () => {
+export default function DashboardLayout() {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
   return (
-    <div className="flex">
-      <div className="w-64 bg-gray-900 h-screen p-4">
-        {/* Sidebar content here */}
-        <div className="text-white text-xl">Sidebar</div>
-      </div>
-      <div className="flex-1 p-8">
-        {/* Top search/AI box here */}
-        <div className="bg-gray-800 p-4 rounded-lg mb-8">
-          Search & Ask AI Box
+    <div className="min-h-screen flex bg-gray-50">
+      {/* Sidebar */}
+      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+
+      {/* Overlay for mobile */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-30 md:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
+      {/* Main Content */}
+      <main className="flex-1 p-6 overflow-y-auto relative">
+        {/* Mobile top bar */}
+        <div className="md:hidden flex items-center justify-between mb-4">
+          <button onClick={() => setSidebarOpen(true)}>
+            <Menu size={24} />
+          </button>
+          <div className="text-xl font-bold">Mindvault</div>
         </div>
-        {/* The Outlet will render the nested route's content */}
+
         <Outlet />
-      </div>
+      </main>
     </div>
   );
-};
-
-export default DashboardLayout;
+}

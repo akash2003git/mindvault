@@ -1,15 +1,80 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Link } from "react-router-dom";
+import { useAtomValue } from "jotai";
+import { isUserAuthenticatedAtom } from "../store/store";
 
 export default function LandingPage() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const isAuthenticated = useAtomValue(isUserAuthenticatedAtom);
+
+  const AuthButtonsDesktop = () => {
+    if (isAuthenticated) {
+      return (
+        <Link
+          to="/dashboard"
+          className="px-4 py-2 rounded-xl bg-gradient-to-r from-purple-500 to-blue-500 hover:opacity-90 transition-colors"
+        >
+          Dashboard
+        </Link>
+      );
+    }
+    return (
+      <>
+        <Link
+          to="/login"
+          className="px-4 py-2 rounded-xl border border-white/20 hover:border-purple-400 transition-colors"
+        >
+          Log In
+        </Link>
+        <Link
+          to="/signup"
+          className="px-4 py-2 rounded-xl bg-gradient-to-r from-purple-500 to-blue-500 hover:opacity-90 transition-colors"
+        >
+          Sign Up
+        </Link>
+      </>
+    );
+  };
+
+  const AuthButtonsMobile = () => {
+    if (isAuthenticated) {
+      return (
+        <Link
+          to="/dashboard"
+          className="px-4 py-2 rounded-xl bg-gradient-to-r from-purple-500 to-blue-500 hover:opacity-90"
+          onClick={() => setMenuOpen(false)}
+        >
+          Dashboard
+        </Link>
+      );
+    }
+    return (
+      <>
+        <Link
+          to="/login"
+          className="px-4 py-2 rounded-xl border border-white/20 hover:border-purple-400"
+          onClick={() => setMenuOpen(false)}
+        >
+          Log In
+        </Link>
+        <Link
+          to="/signup"
+          className="px-4 py-2 rounded-xl bg-gradient-to-r from-purple-500 to-blue-500 hover:opacity-90"
+          onClick={() => setMenuOpen(false)}
+        >
+          Sign Up
+        </Link>
+      </>
+    );
+  };
 
   return (
     <div className="bg-black text-white min-h-screen relative overflow-hidden font-sans">
       {/* Navbar */}
       <nav className="fixed top-4 left-1/2 -translate-x-1/2 z-50 backdrop-blur-md bg-black/60 rounded-3xl flex justify-between items-center px-6 md:px-12 py-4 w-[90%] max-w-6xl shadow-lg border border-white/10">
         <div className="text-2xl font-extrabold tracking-wide">Mindvault</div>
-        <div className="hidden md:flex gap-8 items-center">
+        <div className="hidden md:flex gap-6 items-center">
           <button className="hover:text-purple-400 transition-colors">
             Features
           </button>
@@ -19,9 +84,7 @@ export default function LandingPage() {
           <button className="hover:text-purple-400 transition-colors">
             About
           </button>
-          <button className="px-4 py-2 rounded-xl bg-gradient-to-r from-purple-500 to-blue-500 hover:opacity-90 transition-colors">
-            Sign Up
-          </button>
+          <AuthButtonsDesktop />
         </div>
         <div className="md:hidden flex items-center">
           <button
@@ -46,7 +109,7 @@ export default function LandingPage() {
         </div>
       </nav>
 
-      {/* Mobile Menu (Sticky) */}
+      {/* Mobile Menu */}
       <AnimatePresence>
         {menuOpen && (
           <motion.div
@@ -73,12 +136,7 @@ export default function LandingPage() {
             >
               About
             </button>
-            <button
-              className="px-4 py-2 rounded-xl bg-gradient-to-r from-purple-500 to-blue-500 hover:opacity-90"
-              onClick={() => setMenuOpen(false)}
-            >
-              Sign Up
-            </button>
+            <AuthButtonsMobile />
           </motion.div>
         )}
       </AnimatePresence>
@@ -99,17 +157,28 @@ export default function LandingPage() {
           retrieve it instantly with AI-powered search and one-click saving.
         </p>
         <div className="flex justify-center gap-4">
-          <button className="px-6 py-3 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 text-white font-semibold hover:opacity-90 transition">
-            Get Started
-          </button>
-          <button className="px-6 py-3 rounded-full border border-white/20 hover:border-purple-400 transition">
-            Learn More
-          </button>
+          {isAuthenticated ? (
+            <Link
+              to="/dashboard"
+              className="px-6 py-3 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 text-white font-semibold hover:opacity-90 transition"
+            >
+              Go to Dashboard
+            </Link>
+          ) : (
+            <>
+              <Link
+                to="/signup"
+                className="px-6 py-3 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 text-white font-semibold hover:opacity-90 transition"
+              >
+                Get Started
+              </Link>
+            </>
+          )}
         </div>
       </section>
 
       {/* Feature Highlights */}
-      <section className="relative mt-40 px-8 md:px-20 grid md:grid-cols-3 gap-10 text-left">
+      <section className="relative mt-40 px-8 md:px-15 lg:px-[150px] xl:px-[300px] grid md:grid-cols-3 gap-10 text-left">
         <div className="p-6 rounded-3xl bg-white/5 hover:bg-white/10 transition">
           <h2 className="text-xl font-semibold mb-3">📦 Save Anything</h2>
           <p className="text-gray-400">

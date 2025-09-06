@@ -65,7 +65,7 @@ const LoginPage = () => {
 
   useEffect(() => {
     if (isUserAuthenticated) {
-      navigate("/");
+      navigate("/dashboard");
     }
   }, [isUserAuthenticated]);
 
