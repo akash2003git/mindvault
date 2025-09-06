@@ -4,7 +4,7 @@ import { searchSchema, contentSchema } from "../validations/zodSchemas";
 import z from "zod";
 import { findOrCreateTagIds } from "../utils/tagHelper";
 import { Types } from "mongoose";
-import { getEmbedding, generateContentEmbedding } from "../utils/aiService";
+import { generateContentEmbedding } from "../utils/aiService";
 import Tag from "../models/Tag";
 
 export async function addContent(
