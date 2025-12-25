@@ -1,6 +1,6 @@
 import { Schema, model, Document, Types } from "mongoose";
 
-enum ContentTypes {
+export enum ContentTypes {
   video = "video",
   article = "article",
   tweet = "tweet",
