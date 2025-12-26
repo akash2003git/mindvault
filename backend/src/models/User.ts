@@ -2,7 +2,7 @@ import { Schema, model, Document } from "mongoose";
 import { genSalt, hash, compare } from "bcryptjs";
 
 export interface IUser {
-  name: string;
+  username: string;
   email: string;
   password: string;
 }
@@ -13,7 +13,7 @@ export interface IUserDocument extends IUser, Document {
 
 const userSchema = new Schema<IUserDocument>(
   {
-    name: {
+    username: {
       type: String,
       required: true,
       unique: true,

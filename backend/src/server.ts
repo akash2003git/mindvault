@@ -5,17 +5,21 @@ import express, { Express, Request, Response } from "express";
 import cors from "cors";
 import { connectDB } from "./config/db";
 
+import authRoutes from "./routes/authRoutes";
+
 const app: Express = express();
 
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const PORT: number = Number(process.env.PORT) || 3000;
+app.use("/api/auth", authRoutes);
 
 app.get("/", (req: Request, res: Response) => {
   res.json({ message: "Welcome to mindvault API" });
 });
+
+const PORT: number = Number(process.env.PORT) || 3000;
 
 async function startServer() {
   await connectDB();
