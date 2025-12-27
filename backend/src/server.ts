@@ -6,6 +6,7 @@ import cors from "cors";
 import { connectDB } from "./config/db";
 
 import authRoutes from "./routes/authRoutes";
+import vaultItemRoutes from "./routes/vaultItemRoutes";
 
 const app: Express = express();
 
@@ -14,6 +15,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/auth", authRoutes);
+app.use("/api", vaultItemRoutes);
 
 app.get("/", (req: Request, res: Response) => {
   res.json({ message: "Welcome to mindvault API" });
