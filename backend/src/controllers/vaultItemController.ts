@@ -87,3 +87,106 @@ export const getItemById = async (req: Request, res: Response) => {
       .json({ message: "Server error while fetching vault item.", error });
   }
 };
+
+export const getAllItems = async (req: Request, res: Response) => {
+  try {
+    const userId = req.user!.id;
+
+    const page = Number(req.query.pageNumber) || 1;
+    const limit = Number(req.query.itemsPerPage) || 12;
+    const skip = (page - 1) * limit;
+
+    const items = await VaultItem.find({ userId })
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    const totalItems = await VaultItem.countDocuments({ userId });
+    const totalPages = Math.ceil(totalItems / limit);
+
+    return res.status(200).json({
+      items,
+      page,
+      limit,
+      totalItems,
+      totalPages,
+    });
+  } catch (error) {
+    console.error("Error while fetching vault items:", error);
+    return res.status(500).json({
+      message: "Server error while fetching vault items.",
+      error,
+    });
+  }
+};
+
+export const updateItem = async (req: Request, res: Response) => {
+  try {
+    const { title, description, link, type, tags } = vaultSchema.parse(
+      req.body,
+    );
+
+    const tagIds = await addTags(tags ?? [], req.user!.id);
+
+    const updatedItem = await VaultItem.findOneAndUpdate(
+      { _id: req.params.id, userId: req.user!.id },
+      {
+        title,
+        description,
+        link,
+        type,
+        tags: tagIds,
+      },
+      { new: true },
+    );
+
+    if (!updatedItem) {
+      return res.status(404).json({ message: "Item not found or not yours!" });
+    }
+
+    return res
+      .status(200)
+      .json({ updatedItem, message: "Item updated to vault successfully!" });
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      console.error("Zod validation error: ", error);
+      return res.status(400).json({
+        errors: error.issues.map((issue) => ({
+          field: issue.path.join("."),
+          message: issue.message,
+        })),
+      });
+    }
+
+    console.error("Error while updating vault item: ", error);
+    return res
+      .status(500)
+      .json({ message: "Server error while updating vault item.", error });
+  }
+};
+
+export const deleteItem = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    const deletedItem = await VaultItem.findOneAndDelete({
+      _id: id,
+      userId: req.user!.id,
+    });
+
+    if (!deletedItem) {
+      return res.status(404).json({ message: "Item not found or not yours!" });
+    }
+
+    return res.status(200).json({
+      deletedItem,
+      message: "Item deleted successfully!",
+    });
+  } catch (error) {
+    console.error("Error while deleting vault item:", error);
+    return res.status(500).json({
+      message: "Server error while deleting vault item.",
+      error,
+    });
+  }
+};
