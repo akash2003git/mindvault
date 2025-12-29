@@ -5,6 +5,7 @@ export interface IUser {
   username: string;
   email: string;
   password: string;
+  vaultPublic: boolean;
 }
 
 export interface IUserDocument extends IUser, Document {
@@ -33,6 +34,10 @@ const userSchema = new Schema<IUserDocument>(
       required: true,
       minLength: 8,
       maxLength: 20,
+    },
+    vaultPublic: {
+      type: Boolean,
+      default: false,
     },
   },
   { timestamps: true },
