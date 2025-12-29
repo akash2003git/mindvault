@@ -16,7 +16,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/auth", authRoutes);
-app.use("/api", vaultItemRoutes);
+app.use("/api/vault", vaultItemRoutes);
 app.use("/api/share", shareRoutes);
 
 app.get("/", (req: Request, res: Response) => {

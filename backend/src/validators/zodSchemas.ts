@@ -44,5 +44,7 @@ export const vaultSchema = z.object({
 export const tagSchema = z.object({
   title: z
     .string()
-    .min(3, { error: "Tag must at least be 3 characters long!" }),
+    .trim()
+    .toLowerCase()
+    .min(2, { error: "Tag must at least be 2 characters long!" }),
 });

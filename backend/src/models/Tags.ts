@@ -5,14 +5,14 @@ export interface ITag {
   userId: Types.ObjectId;
 }
 
-export interface ITagDocument extends ITag, Document {}
+export interface ITagDocument extends ITag, Document { }
 
 const tagSchema = new Schema<ITagDocument>(
   {
     title: {
       type: String,
       required: true,
-      minLength: 3,
+      minLength: 2,
     },
     userId: {
       type: Schema.Types.ObjectId,
@@ -22,5 +22,7 @@ const tagSchema = new Schema<ITagDocument>(
   },
   { timestamps: true },
 );
+
+tagSchema.index({ title: 1, userId: 1 }, { unique: true });
 
 export const Tag = model<ITagDocument>("Tag", tagSchema);
