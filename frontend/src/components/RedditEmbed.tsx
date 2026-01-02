@@ -1,4 +1,4 @@
-//import { useEffect } from "react";
+// import { useEffect } from "react";
 
 export const RedditEmbed = ({ url }: { url: string }) => {
   // useEffect(() => {
@@ -12,10 +12,8 @@ export const RedditEmbed = ({ url }: { url: string }) => {
   // }, []);
 
   return (
-    <div className="max-w-75 flex items-center justify-center">
-      <blockquote className="reddit-embed-bq">
-        <a href={url}></a>
-      </blockquote>
-    </div>
+    <blockquote className="reddit-embed-bq">
+      <a href={url}></a>
+    </blockquote>
   );
 };

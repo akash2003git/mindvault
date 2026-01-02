@@ -47,13 +47,13 @@ export const Card = (props: CardProps) => {
   const parsed = parseEmbed(props.link);
 
   return (
-    <div className="flex-col items-center p-5 rounded-xl font-inter shadow-lg bg-white">
+    <div className="flex-col items-center p-5 rounded-xl font-inter shadow-lg bg-white min-w-80">
       <div className="flex justify-between mb-5">
-        <div className="flex">
-          <div className="text-gray-500 mr-2"><Icon /></div>
-          <div className="text-center font-bold text-xl line-clamp-1">{props.title}</div>
+        <div className="flex justify-center items-center">
+          <div className="text-gray-500 mr-2"><Icon className="flex justify-center items-center w-6 h-6 sm:w-7 sm:h-7" /></div>
+          <div className="font-bold text-lg sm:text-xl line-clamp-1">{props.title}</div>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 ml-2 items-center">
           <Button variant="primary" size="sm" startIcon={Share2} onClick={props.handleShare} />
           <Button variant="primary" size="sm" startIcon={Trash2} onClick={props.handleDelete} />
         </div>
