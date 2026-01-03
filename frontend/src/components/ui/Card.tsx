@@ -13,10 +13,10 @@ import {
   type LucideIcon
 } from "lucide-react";
 import { Button } from "./Button"
-import { ContentTypes } from "../types/ContentTypes";
+import { ContentTypes } from "../../types/ContentTypes";
 import Markdown from "react-markdown";
-import { EmbedRenderer } from "./EmbedRenderer";
-import { parseEmbed } from "../utils/parseEmbed";
+import { EmbedRenderer } from "../embed/EmbedRenderer";
+import { parseEmbed } from "../../utils/parseEmbed";
 
 export interface CardProps {
   title: string;

@@ -1,235 +1,30 @@
-import { Card } from "./components/Card";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import LandingPage from "./pages/LandingPage";
+import SignupPage from "./pages/SignupPage";
+import LoginPage from "./pages/LoginPage";
+import ProtectedRoute from "./components/layout/ProtectedRoute";
+import Dashboard from "./components/layout/Dashboard";
+import CardDetails from "./pages/CardDetails";
 
 function App() {
   return (
-    <div
-      className="
-        bg-white
-        min-h-screen
-        p-5
-        columns-[300px]
-        gap-6
-      "
-    >
+    <BrowserRouter>
+      <Routes>
 
-      <div className="break-inside-avoid mb-6">
-        <Card
-          title="How to Focus Better"
-          description="A great video on improving focus and productivity."
-          link="https://www.youtube.com/watch?v=MF8RFD7tk48"
-          type="video"
-          tags={["productivity", "focus"]}
-          date="2026-01-01"
-          handleShare={() => console.log("share video")}
-          handleDelete={() => console.log("delete video")}
-        />
-      </div>
+        {/* Public */}
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
+        {/* <Route path="/share/:hash" element={<SharedView />} /> */}
 
-      <div className="break-inside-avoid mb-6">
-        <Card
-          title="Elon’s Latest Tweet"
-          description="This tweet has some interesting insights."
-          link="https://twitter.com/username/status/2006330639960694808"
-          type="tweet"
-          tags={["tech", "twitter"]}
-          date="2026-01-01"
-          handleShare={() => console.log("share tweet")}
-          handleDelete={() => console.log("delete tweet")}
-        />
-      </div>
+        {/* Protected */}
+        <Route path="/vault" element={<ProtectedRoute />}>
+          <Route index element={<Dashboard />} />
+          <Route path="item/:id" element={<CardDetails />} />
+        </Route>
 
-      <div className="break-inside-avoid mb-6">
-        <Card
-          title="Beautiful Travel Reel"
-          description="A stunning travel reel from Instagram."
-          link="https://www.instagram.com/reel/DS7hBgDEg4T/"
-          type="post"
-          tags={["travel", "inspiration"]}
-          date="2026-01-01"
-          handleShare={() => console.log("share insta")}
-          handleDelete={() => console.log("delete insta")}
-        />
-      </div>
-
-      <div className="break-inside-avoid mb-6">
-        <Card
-          title="Weird Cricket Bat"
-          description="Reddit discussion about unusual cricket bat."
-          link="https://www.reddit.com/r/Cricket/comments/1q081bl/comment/nww8cdc/"
-          type="post"
-          tags={["cricket", "sports"]}
-          date="2026-01-01"
-          handleShare={() => console.log("share reddit")}
-          handleDelete={() => console.log("delete reddit")}
-        />
-      </div>
-
-      <div className="break-inside-avoid mb-6">
-        <Card
-          title="Deep Work Notes"
-          description={`# Deep Work 🧠  
-Cal Newport's book on how to get more meaningful work done.
-
-- Avoid distractions  
-- Focus your energy  
-- Build rituals  
-- Prioritize high-value activities  
-
-**A must read!**`}
-          type="article"
-          tags={["reading", "notes", "deep-work"]}
-          date="2026-01-02"
-          handleShare={() => console.log("share article")}
-          handleDelete={() => console.log("delete article")}
-        />
-      </div>
-
-
-
-      <div className="break-inside-avoid mb-6">
-        <Card
-          title="How to Focus Better"
-          description="A great video on improving focus and productivity."
-          link="https://www.youtube.com/watch?v=MF8RFD7tk48"
-          type="video"
-          tags={["productivity", "focus"]}
-          date="2026-01-01"
-          handleShare={() => console.log("share video")}
-          handleDelete={() => console.log("delete video")}
-        />
-      </div>
-
-      <div className="break-inside-avoid mb-6">
-        <Card
-          title="Elon’s Latest Tweet"
-          description="This tweet has some interesting insights."
-          link="https://twitter.com/username/status/2006330639960694808"
-          type="tweet"
-          tags={["tech", "twitter"]}
-          date="2026-01-01"
-          handleShare={() => console.log("share tweet")}
-          handleDelete={() => console.log("delete tweet")}
-        />
-      </div>
-
-      <div className="break-inside-avoid mb-6">
-        <Card
-          title="Beautiful Travel Reel"
-          description="A stunning travel reel from Instagram."
-          link="https://www.instagram.com/reel/DS7hBgDEg4T/"
-          type="post"
-          tags={["travel", "inspiration"]}
-          date="2026-01-01"
-          handleShare={() => console.log("share insta")}
-          handleDelete={() => console.log("delete insta")}
-        />
-      </div>
-
-      <div className="break-inside-avoid mb-6">
-        <Card
-          title="Weird Cricket Bat"
-          description="Reddit discussion about unusual cricket bat."
-          link="https://www.reddit.com/r/Cricket/comments/1q081bl/comment/nww8cdc/"
-          type="post"
-          tags={["cricket", "sports"]}
-          date="2026-01-01"
-          handleShare={() => console.log("share reddit")}
-          handleDelete={() => console.log("delete reddit")}
-        />
-      </div>
-
-      <div className="break-inside-avoid mb-6">
-        <Card
-          title="Deep Work Notes"
-          description={`# Deep Work 🧠  
-Cal Newport's book on how to get more meaningful work done.
-
-- Avoid distractions  
-- Focus your energy  
-- Build rituals  
-- Prioritize high-value activities  
-
-**A must read!**`}
-          type="article"
-          tags={["reading", "notes", "deep-work"]}
-          date="2026-01-02"
-          handleShare={() => console.log("share article")}
-          handleDelete={() => console.log("delete article")}
-        />
-      </div>
-
-      <div className="break-inside-avoid mb-6">
-        <Card
-          title="How to Focus Better"
-          description="A great video on improving focus and productivity."
-          link="https://www.youtube.com/watch?v=MF8RFD7tk48"
-          type="video"
-          tags={["productivity", "focus"]}
-          date="2026-01-01"
-          handleShare={() => console.log("share video")}
-          handleDelete={() => console.log("delete video")}
-        />
-      </div>
-
-      <div className="break-inside-avoid mb-6">
-        <Card
-          title="Elon’s Latest Tweet"
-          description="This tweet has some interesting insights."
-          link="https://twitter.com/username/status/2006330639960694808"
-          type="tweet"
-          tags={["tech", "twitter"]}
-          date="2026-01-01"
-          handleShare={() => console.log("share tweet")}
-          handleDelete={() => console.log("delete tweet")}
-        />
-      </div>
-
-      <div className="break-inside-avoid mb-6">
-        <Card
-          title="Beautiful Travel Reel"
-          description="A stunning travel reel from Instagram."
-          link="https://www.instagram.com/reel/DS7hBgDEg4T/"
-          type="post"
-          tags={["travel", "inspiration"]}
-          date="2026-01-01"
-          handleShare={() => console.log("share insta")}
-          handleDelete={() => console.log("delete insta")}
-        />
-      </div>
-
-      <div className="break-inside-avoid mb-6">
-        <Card
-          title="Weird Cricket Bat"
-          description="Reddit discussion about unusual cricket bat."
-          link="https://www.reddit.com/r/Cricket/comments/1q081bl/comment/nww8cdc/"
-          type="post"
-          tags={["cricket", "sports"]}
-          date="2026-01-01"
-          handleShare={() => console.log("share reddit")}
-          handleDelete={() => console.log("delete reddit")}
-        />
-      </div>
-
-      <div className="break-inside-avoid mb-6">
-        <Card
-          title="Deep Work Notes"
-          description={`# Deep Work 🧠  
-Cal Newport's book on how to get more meaningful work done.
-
-- Avoid distractions  
-- Focus your energy  
-- Build rituals  
-- Prioritize high-value activities  
-
-**A must read!**`}
-          type="article"
-          tags={["reading", "notes", "deep-work"]}
-          date="2026-01-02"
-          handleShare={() => console.log("share article")}
-          handleDelete={() => console.log("delete article")}
-        />
-      </div>
-    </div>
+      </Routes>
+    </BrowserRouter>
   );
 }
 

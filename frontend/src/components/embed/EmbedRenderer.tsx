@@ -1,4 +1,4 @@
-import { parseEmbed } from "../utils/parseEmbed";
+import { parseEmbed } from "../../utils/parseEmbed";
 import { YouTubeEmbed } from "./YouTubeEmbed";
 import { TwitterEmbed } from "./TwitterEmbed";
 import { InstagramEmbed } from "./InstagramEmbed";
