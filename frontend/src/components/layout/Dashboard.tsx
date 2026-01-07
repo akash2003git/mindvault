@@ -1,6 +1,7 @@
-import { Menu, Plus, Search, Share2, X } from "lucide-react"
+import { Menu, Plus, Search, Share2, X, Brain } from "lucide-react"
 import { Button } from "../ui/Button"
 import { useState } from "react";
+import CardGrid from "../ui/CardGrid";
 
 const Dashboard = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -8,7 +9,7 @@ const Dashboard = () => {
   return (
     <div>
       {/* Sidebar */}
-      <aside className={`fixed top-0 left-0 h-screen w-70 bg-white border-r-2 border-gray-400 p-5 transform transition-transform duration-300 ease-in-out md:translate-x-0 ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}`}>
+      <aside className={`z-100 fixed top-0 left-0 h-screen w-70 bg-white border-r-2 border-gray-400 p-5 transform transition-transform duration-300 ease-in-out md:translate-x-0 ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}`}>
         {/* Mobile-only close button */}
         <div className="flex items-center justify-between mb-4 md:hidden">
           <h2 className="text-xl font-bold">Menu</h2>
@@ -58,7 +59,10 @@ const Dashboard = () => {
               <Menu />
             </button>
 
-            <h1 className="text-3xl font-bold">MindVault</h1>
+            <div className="text-3xl hidden md:flex font-bold gap-2 text-center items-center">
+              <Brain className="w-8 h-8" />
+              <span>MindVault</span>
+            </div>
           </div>
 
           <form>
@@ -79,18 +83,20 @@ const Dashboard = () => {
 
         {/* Main Content*/}
         <div className="bg-white min-h-screen">
-          <div className="flex justify-between p-5">
-            <h2 className="text-2xl font-bold">All Vault Items</h2>
-            <div className="flex gap-2 items-center">
+          <div className="flex items-center justify-between p-5">
+            <h2 className="text-3xl font-bold">All Vault Items</h2>
+            <div className="hidden md:flex gap-2 justify-between items-center">
               <Button variant="secondary" size="md" text="Share Vault" startIcon={Share2} onClick={() => console.log("share")} />
               <Button variant="primary" size="md" text="Add Content" startIcon={Plus} onClick={() => console.log("add content")} />
+            </div>
+            <div className="md:hidden flex gap-2 justify-between items-center">
+              <Button variant="secondary" size="md" startIcon={Share2} onClick={() => console.log("share")} />
+              <Button variant="primary" size="md" startIcon={Plus} onClick={() => console.log("add content")} />
             </div>
           </div>
 
           {/* Card Grid */}
-          <div className="p-5">
-            Card Grid
-          </div>
+          <CardGrid />
         </div>
 
         {/* Footer */}
