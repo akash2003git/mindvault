@@ -1,7 +1,6 @@
 import { Card } from "./Card"
 import { ContentTypes } from "../../types/ContentTypes"
 
-
 const dummyData = [
   {
     "id": "1",
