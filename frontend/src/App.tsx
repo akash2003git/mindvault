@@ -5,6 +5,7 @@ import LoginPage from "./pages/LoginPage";
 import ProtectedRoute from "./components/layout/ProtectedRoute";
 import Dashboard from "./components/layout/Dashboard";
 import CardDetails from "./pages/CardDetails";
+import VaultLayout from "./components/layout/VaultLayout";
 
 function App() {
   return (
@@ -19,8 +20,10 @@ function App() {
 
         {/* Protected */}
         <Route path="/vault" element={<ProtectedRoute />}>
-          <Route index element={<Dashboard />} />
-          <Route path="item/:id" element={<CardDetails />} />
+          <Route element={<VaultLayout />}>
+            <Route index element={<Dashboard />} />
+            <Route path="item/:id" element={<CardDetails />} />
+          </Route>
         </Route>
 
       </Routes>
