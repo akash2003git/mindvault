@@ -6,6 +6,7 @@ import Sidebar from "../ui/Sidebar"
 import Topbar from "../ui/Topbar";
 import Footer from "../ui/Footer";
 import Pagination from "../ui/Pagination";
+import CardDetails from "../../pages/CardDetails"
 
 const Dashboard = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -40,7 +41,8 @@ const Dashboard = () => {
             </div>
           </div>
 
-          <CardGrid />
+          {/* <CardGrid /> */}
+          <CardDetails />
         </div>
 
         <Pagination page={page} totalPages={totalPages} handlePrev={handlePrev} handleNext={handleNext} />

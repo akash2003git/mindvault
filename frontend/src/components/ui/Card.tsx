@@ -95,7 +95,7 @@ export const Card = (props: CardProps) => {
         {parsed.platform !== "none" ? (
           <EmbedRenderer link={props.link} />
         ) : (
-          <div className="line-clamp-10">
+          <div className="line-clamp-10 prose">
             <Markdown>{props.description}</Markdown>
           </div>
         )}
