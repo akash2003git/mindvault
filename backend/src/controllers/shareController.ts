@@ -168,7 +168,7 @@ export const openSharedLink = async (req: Request, res: Response) => {
       const item = await VaultItem.findOne({
         _id: link.contentId,
         isPublic: true,
-      });
+      }).populate("tags", "title _id");
 
       if (!item) {
         return res.status(404).json({
@@ -190,7 +190,7 @@ export const openSharedLink = async (req: Request, res: Response) => {
       const items = await VaultItem.find({
         userId: link.userId,
         isPublic: true,
-      }).sort({ createdAt: -1 });
+      }).populate("tags", "title _id").sort({ createdAt: -1 });
 
       return res.status(200).json({ type: "collection", items });
     }

@@ -2,7 +2,7 @@ import { Link } from "react-router"
 
 const SignupPage = () => {
   return (
-    <div className="flex items-center justify-center bg-white min-h-screen">
+    <div className="flex flex-1 gap-10 items-center justify-center bg-white py-30">
       <div className="shadow-xl rounded-xl p-8 flex flex-col gap-5">
         <h1 className="text-center text-3xl p-5">Create an account</h1>
         <form className="flex flex-col gap-5">
