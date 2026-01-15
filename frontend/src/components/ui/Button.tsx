@@ -37,7 +37,7 @@ export const Button = (props: ButtonProps) => {
 
   return (
     <button className={
-      `flex items-center gap-1 rounded-xl ${variantClasses[props.variant]} ${sizeClasses[props.size]} ${stateClasses[props.loading ? "loading" : "default"]}`
+      `flex items-center justify-center gap-1 rounded-xl ${variantClasses[props.variant]} ${sizeClasses[props.size]} ${stateClasses[props.loading ? "loading" : "default"]}`
     } onClick={props.loading ? undefined : props.onClick} >
       {StartIcon && <StartIcon className={iconClasses[props.size]} />}
       {props.text}
