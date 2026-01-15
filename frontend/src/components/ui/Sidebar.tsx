@@ -1,4 +1,4 @@
-import { X } from "lucide-react"
+import { Brain, X } from "lucide-react"
 
 export interface SidebarProps {
   isSidebarOpen: boolean;
@@ -10,8 +10,11 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }: SidebarProps) => {
   return (
     <aside className={`z-100 fixed top-0 left-0 h-full w-70 bg-white border-r-2 border-gray-400 p-5 transform transition-transform duration-300 ease-in-out md:translate-x-0 ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}`}>
       {/* Mobile-only close button */}
-      <div className="flex items-center justify-between mb-4 md:hidden">
-        <h2 className="text-xl font-bold">Menu</h2>
+      <div className="flex items-center justify-between mb-5 md:hidden">
+        <div className="text-2xl flex font-bold gap-2 text-center items-center">
+          <Brain className="w-7 h-7" />
+          <span>MindVault</span>
+        </div>
         <button
           onClick={() => setIsSidebarOpen(false)}
           aria-label="Close sidebar"
