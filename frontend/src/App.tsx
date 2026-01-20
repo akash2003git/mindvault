@@ -7,27 +7,30 @@ import Dashboard from "./components/layout/Dashboard";
 import CardDetails from "./pages/CardDetails";
 import VaultLayout from "./components/layout/VaultLayout";
 import PublicLayout from "./components/layout/PublicLayout";
+import { AuthProvider } from "./context/AuthProvider";
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        {/* Public */}
-        <Route element={<PublicLayout />}>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/signup" element={<SignupPage />} />
-        </Route>
-
-        {/* Protected */}
-        <Route path="/vault" element={<ProtectedRoute />}>
-          <Route element={<VaultLayout />}>
-            <Route index element={<Dashboard />} />
-            <Route path="item/:id" element={<CardDetails />} />
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          {/* Public */}
+          <Route element={<PublicLayout />}>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/signup" element={<SignupPage />} />
           </Route>
-        </Route>
-      </Routes>
-    </BrowserRouter>
+
+          {/* Protected */}
+          <Route path="/vault" element={<ProtectedRoute />}>
+            <Route element={<VaultLayout />}>
+              <Route index element={<Dashboard />} />
+              <Route path="item/:id" element={<CardDetails />} />
+            </Route>
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
   );
 }
 
