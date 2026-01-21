@@ -8,6 +8,7 @@ import CardDetails from "./pages/CardDetails";
 import VaultLayout from "./components/layout/VaultLayout";
 import PublicLayout from "./components/layout/PublicLayout";
 import { AuthProvider } from "./context/AuthProvider";
+import GuestRoute from "./components/layout/GuestRoute";
 
 function App() {
   return (
@@ -17,8 +18,11 @@ function App() {
           {/* Public */}
           <Route element={<PublicLayout />}>
             <Route path="/" element={<LandingPage />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/signup" element={<SignupPage />} />
+            {/* {Guest Only} */}
+            <Route element={<GuestRoute />}>
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/signup" element={<SignupPage />} />
+            </Route>
           </Route>
 
           {/* Protected */}
