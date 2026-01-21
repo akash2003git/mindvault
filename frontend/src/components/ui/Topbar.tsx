@@ -1,10 +1,13 @@
 import { Menu, Search, Brain } from "lucide-react"
+import { useNavigate } from "react-router-dom";
 
 export interface TopbarProps {
   setIsSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const Topbar = ({ setIsSidebarOpen }: TopbarProps) => {
+  const navigate = useNavigate();
+
   return (
     <nav className="p-5 bg-white flex items-center justify-between border-b-2 border-gray-400">
       <div className="flex items-center gap-3">
@@ -16,7 +19,7 @@ const Topbar = ({ setIsSidebarOpen }: TopbarProps) => {
           <Menu className="cursor-pointer" />
         </button>
 
-        <div className="text-3xl hidden md:flex font-bold gap-2 text-center items-center">
+        <div className="text-3xl hidden md:flex font-bold gap-2 text-center items-center cursor-pointer" onClick={() => navigate("/")}>
           <Brain className="w-8 h-8" />
           <span>MindVault</span>
         </div>

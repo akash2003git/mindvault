@@ -28,7 +28,7 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }: SidebarProps) => {
       </div>
 
       {/* Profile */}
-      <div className="mb-6 flex flex-col items-center justify-center border border-gray-400 p-4 rounded-xl w-56">
+      <div className="mb-5 flex flex-col items-center justify-center border border-gray-400 p-4 rounded-xl w-56">
         <div className="w-12 h-12 rounded-full bg-gray-300 flex items-center justify-center">
           {user && user.username.charAt(0).toUpperCase()}
         </div>
@@ -45,7 +45,7 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }: SidebarProps) => {
       </div>
 
       {/* Content types */}
-      <div className="p-5">
+      <div className="px-5">
         <h3 className="mb-3 font-semibold text-gray-500">
           Content Types
         </h3>
@@ -57,7 +57,7 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }: SidebarProps) => {
         </ul>
       </div>
 
-      <button onClick={logout} className="w-full font-bold px-4 py-2 bg-black text-center text-white rounded-xl mt-6 cursor-pointer hover:bg-gray-800">Logout</button>
+      <button onClick={logout} className="w-full font-bold px-4 py-2 bg-black text-center text-white rounded-xl mt-5 cursor-pointer hover:bg-gray-800">Logout</button>
     </aside>
   )
 }
