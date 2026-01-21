@@ -1,7 +1,10 @@
 import { Share2, Search, Sparkle, Download } from "lucide-react"
 import { Button } from "../components/ui/Button"
+import { useNavigate } from "react-router-dom"
 
 const LandingPage = () => {
+  const navigate = useNavigate();
+
   return (
     <>
       {/* Hero */}
@@ -9,7 +12,7 @@ const LandingPage = () => {
         <h1 className="font-bold text-[35px] md:text-[50px]">Your Second brain for links, notes and ideas.</h1>
         <span className="text-gray-600 text-2xl mb-5">Save articles, videos, tweets, and thoughts in one place. Search, tag and share your knowledge effortlessly.</span>
         <div className="flex gap-5">
-          <Button text="Get Started" variant="primary" size="lg" onClick={() => console.log("Sign Up")}></Button>
+          <Button text="Get Started" variant="primary" size="lg" onClick={() => navigate("/signup")}></Button>
         </div>
       </div>
 
