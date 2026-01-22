@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { ContentTypes } from "../../types/ContentTypes";
 import { Button } from "../ui/Button";
 
@@ -8,7 +8,8 @@ interface SearchFilterFormProps {
 }
 
 const SearchFilterForm = ({ onClose }: SearchFilterFormProps) => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams,] = useSearchParams();
+  const navigate = useNavigate();
 
   const [search, setSearch] = useState(searchParams.get("search") || "");
   const [tags, setTags] = useState(searchParams.get("tags") || "");
@@ -23,7 +24,10 @@ const SearchFilterForm = ({ onClose }: SearchFilterFormProps) => {
     if (type) newParams.set("type", type);
     newParams.set("page", "1");
 
-    setSearchParams(newParams);
+    navigate({
+      pathname: "/vault",
+      search: newParams.toString(),
+    });
     onClose();
   };
 
@@ -69,7 +73,7 @@ const SearchFilterForm = ({ onClose }: SearchFilterFormProps) => {
           size="md"
           variant="secondary"
           text="Clear"
-          onClick={() => { setSearchParams({}); onClose(); }}
+          onClick={() => { navigate("/vault"); onClose(); }}
         />
       </div>
     </form>

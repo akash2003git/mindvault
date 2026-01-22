@@ -8,7 +8,7 @@ export interface ButtonProps {
   endIcon?: LucideIcon;
   loading?: boolean;
   disabled?: boolean;
-  onClick: () => void;
+  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
 export const Button = (props: ButtonProps) => {

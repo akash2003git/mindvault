@@ -25,8 +25,8 @@ export interface CardProps {
   type: ContentTypes;
   tags?: string[];
   date: string;
-  handleShare: () => void;
-  handleDelete: () => void;
+  handleShare: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  handleDelete: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
 export const Card = (props: CardProps) => {
@@ -36,8 +36,8 @@ export const Card = (props: CardProps) => {
     article: Newspaper,
     tweet: Twitter,
     thread: Spool,
-    post: Repeat2,
     note: NotepadText,
+    post: Repeat2,
     website: Globe,
     tool: Wrench,
     other: Folder,
@@ -54,8 +54,18 @@ export const Card = (props: CardProps) => {
           <div className="font-bold text-lg line-clamp-1">{props.title}</div>
         </div>
         <div className="flex gap-2 ml-2 items-center">
-          <Button variant="primary" size="sm" startIcon={Share2} onClick={props.handleShare} />
-          <Button variant="primary" size="sm" startIcon={Trash2} onClick={props.handleDelete} />
+          <Button
+            variant="primary"
+            size="sm"
+            startIcon={Share2}
+            onClick={(e) => props.handleShare(e)}
+          />
+          <Button
+            variant="primary"
+            size="sm"
+            startIcon={Trash2}
+            onClick={(e) => props.handleDelete(e)}
+          />
         </div>
       </div>
 
@@ -114,7 +124,7 @@ export const Card = (props: CardProps) => {
 
         {props.tags?.map((tag) => {
           return (
-            <div className="bg-gray-300 rounded-3xl flex items-center p-2 py-1">
+            <div key={tag} className="bg-gray-300 rounded-3xl flex items-center p-2 py-1">
               < span className="text-sm text-center" >{tag}</span>
             </div>
           )

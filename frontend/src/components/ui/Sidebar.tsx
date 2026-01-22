@@ -39,6 +39,10 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }: SidebarProps) => {
 
     newParams.set("page", "1");
     setSearchParams(newParams);
+    navigate({
+      pathname: "/vault",
+      search: newParams.toString(),
+    });
 
     if (window.innerWidth < 768) {
       setIsSidebarOpen(false);

@@ -16,6 +16,11 @@ export type VaultItem = {
   updatedAt: string;
 }
 
+export type VaultItemResponse = {
+  item: VaultItem;
+  message: string;
+}
+
 export type VaultResponse = {
   items: VaultItem[];
   page: number;

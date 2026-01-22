@@ -59,6 +59,7 @@ const Dashboard = () => {
   useEffect(() => {
     const loadData = async () => {
       setIsLoading(true);
+
       try {
         const params = {
           page: Number(searchParams.get("page")) || 1,
@@ -142,7 +143,7 @@ const Dashboard = () => {
           <CardGrid items={items} />
         ) : (
           <div className="text-center p-20 text-gray-500 flex flex-col justify-center">
-            <p className="text-xl">No items found matching your filters.</p>
+            <p className="text-xl">No items found.</p>
           </div>
         )}
       </div>
