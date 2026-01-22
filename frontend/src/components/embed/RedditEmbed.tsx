@@ -1,19 +1,25 @@
-// import { useEffect } from "react";
+import { useEffect } from "react";
 
 export const RedditEmbed = ({ url }: { url: string }) => {
-  // useEffect(() => {
-  //   // Load or refresh the Reddit embed script
-  //   const script = document.createElement("script");
-  //   script.src = "https://embed.reddit.com/widgets.js";
-  //   script.async = true;
-  //   document.body.appendChild(script);
-  //
-  //   return () => { };
-  // }, []);
+  useEffect(() => {
+    // force Reddit embeds to re-render
+    const script = document.querySelector(
+      'script[src="https://embed.reddit.com/widgets.js"]'
+    ) as HTMLScriptElement | null;
+
+    if (script) {
+      script.remove();
+    }
+
+    const newScript = document.createElement("script");
+    newScript.src = "https://embed.reddit.com/widgets.js";
+    newScript.async = true;
+    document.body.appendChild(newScript);
+  }, []);
 
   return (
     <blockquote className="reddit-embed-bq">
-      <a href={url}></a>
+      <a href={url} />
     </blockquote>
   );
 };

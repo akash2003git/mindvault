@@ -29,6 +29,11 @@ export type VaultResponse = {
   totalPages: number;
 }
 
+export type NewVaultItemResponse = {
+  newItem: VaultItem;
+  message: string;
+}
+
 export type FilterParams = {
   page?: number;
   limit?: number;

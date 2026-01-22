@@ -1,6 +1,6 @@
 import { Card } from "./Card"
 import { ContentTypes } from "../../types/ContentTypes"
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export interface CardProps {
   title: string;
@@ -22,30 +22,33 @@ export interface CardGridProps {
 }
 
 const CardGrid = ({ items }: CardGridProps) => {
+  const navigate = useNavigate();
+
   return (
-    <div className="p-5 columns-[300px] gap-6">
+    <div className="p-5 columns-[375px] gap-6">
       {items.map((card) => (
-        <Link key={card.id} to={`item/${card.id}`}>
-          <div className="break-inside-avoid mb-6">
-            <Card
-              title={card.title}
-              description={card.description}
-              link={card.link}
-              type={card.type as ContentTypes}
-              tags={card.tags}
-              date={card.date}
-              handleShare={(e: React.FormEvent) => {
-                e.preventDefault();
-                e.stopPropagation();
-                console.log("share", card.id);
-              }}
-              handleDelete={(e: React.FormEvent) => {
-                e.preventDefault();
-                e.stopPropagation();
-                console.log("delete", card.id);
-              }}
-            />
-          </div></Link>
+        <div
+          key={card.id}
+          className="break-inside-avoid mb-6 cursor-pointer"
+          onClick={() => navigate(`/vault/item/${card.id}`)}
+        >
+          <Card
+            title={card.title}
+            description={card.description}
+            link={card.link}
+            type={card.type}
+            tags={card.tags}
+            date={card.date}
+            handleShare={(e) => {
+              e.stopPropagation();
+              console.log("share", card.id);
+            }}
+            handleDelete={(e) => {
+              e.stopPropagation();
+              console.log("delete", card.id);
+            }}
+          />
+        </div>
       ))}
     </div>
   )

@@ -1,9 +1,10 @@
 export const YouTubeEmbed = ({ url }: { url: string }) => {
   return (
     <iframe
-      className="w-70 max-w-70 rounded-lg"
+      className="w-full max-w-[560px] aspect-video rounded-lg"
       src={url}
       title="YouTube video"
+      loading="lazy"
       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
       allowFullScreen
     />

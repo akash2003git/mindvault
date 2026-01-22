@@ -5,9 +5,9 @@ import { useState } from "react";
 import Pagination from "../ui/Pagination";
 import CardGrid from "../ui/CardGrid";
 import Modal from "../ui/Modal";
-import AddContentForm from "../forms/AddContentForm";
-import { useSearchParams } from "react-router-dom";
-import { getVaultItems } from "../../api/vaultApi";
+import AddContentForm, { type AddContentPayload } from "../forms/AddContentForm";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { getVaultItems, createItem } from "../../api/vaultApi";
 import { ContentTypes } from "../../types/ContentTypes";
 
 export interface CardProps {
@@ -30,6 +30,8 @@ export interface CardGridProps {
 }
 
 const Dashboard = () => {
+  const navigate = useNavigate();
+
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [searchParams, setSearchParams] = useSearchParams();
@@ -54,6 +56,16 @@ const Dashboard = () => {
       setSearchParams(searchParams);
     }
   };
+
+  const handleAddContent = async (payload: AddContentPayload) => {
+    try {
+      const res = await createItem(payload);
+      setIsModalOpen(false);
+      navigate(`/vault/item/${res.newItem._id}`);
+    } catch (error) {
+      console.error("Failed to create item: ", error);
+    }
+  }
 
 
   useEffect(() => {
@@ -98,7 +110,7 @@ const Dashboard = () => {
   return (
     <div>
       <Modal
-        children={<AddContentForm onSubmit={() => console.log("submit")} onCancel={() => console.log("cancel")} />}
+        children={<AddContentForm onSubmit={handleAddContent} onCancel={() => setIsModalOpen(false)} onClose={() => setIsModalOpen(false)} />}
         isOpen={isModalOpen}
         title="Add Content"
         onClose={() => setIsModalOpen(false)}

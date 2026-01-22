@@ -70,38 +70,6 @@ export const Card = (props: CardProps) => {
       </div>
 
       <div className="text-gray-800 text-md mb-5">
-        {/* <div className="line-clamp-10"> */}
-        {/*   <Markdown> */}
-        {/*     {props.description} */}
-        {/*   </Markdown> */}
-        {/* </div> */}
-        {/**/}
-        {/* <iframe */}
-        {/*   className="w-full max-w-75" */}
-        {/*   src="https://www.youtube.com/embed/MF8RFD7tk48?si=bTUq5a6QJ2aUqUs_" */}
-        {/*   title="YouTube video player" */}
-        {/* ></iframe> */}
-        {/**/}
-        {/* <div className="max-w-75 w-full flex items-center justify-center"> */}
-        {/*   <blockquote className="twitter-tweet"> */}
-        {/*     <a href="https://twitter.com/username/status/2006330639960694808"></a> */}
-        {/*   </blockquote> */}
-        {/* </div> */}
-        {/**/}
-        {/* <div className="max-w-75 w-full"> */}
-        {/*   <blockquote */}
-        {/*     className="instagram-media" */}
-        {/*     data-instgrm-permalink="https://www.instagram.com/reel/DS7hBgDEg4T/" */}
-        {/*   ></blockquote> */}
-        {/* </div> */}
-        {/**/}
-        {/* <div className="max-w-75 flex items-center justify-center"> */}
-        {/*   <blockquote className="reddit-embed-bq"> */}
-        {/*     <a href="https://www.reddit.com/r/Cricket/comments/1q081bl/weird_looking_bat/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button"></a> */}
-        {/*   </blockquote> */}
-        {/* </div> */}
-
-
         {parsed.platform !== "none" ? (
           <EmbedRenderer link={props.link} />
         ) : (
@@ -112,16 +80,6 @@ export const Card = (props: CardProps) => {
       </div>
 
       <div className="flex gap-2 mb-5 font-semibold flex-wrap">
-        {/* <div className="bg-gray-300 rounded-3xl flex items-center p-2 py-1"> */}
-        {/*   < span className="text-sm text-center" > #productivity</span> */}
-        {/* </div> */}
-        {/* <div className="bg-gray-300 rounded-3xl flex items-center p-2 py-1"> */}
-        {/*   <span className="text-sm text-center">#productivity</span> */}
-        {/* </div> */}
-        {/* <div className="bg-gray-300 rounded-3xl flex items-center p-2 py-1"> */}
-        {/*   <span className="text-sm text-center">#productivity</span> */}
-        {/* </div> */}
-
         {props.tags?.map((tag) => {
           return (
             <div key={tag} className="bg-gray-300 rounded-3xl flex items-center p-2 py-1">
