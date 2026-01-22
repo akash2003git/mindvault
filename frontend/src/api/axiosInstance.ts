@@ -6,17 +6,22 @@ const api = axios.create({
   headers: {
     "Content-Type": "application/json",
   }
-})
+});
 
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token");
-  if (token) {
-    config.headers.Authorization = `Bearer {token}`;
+  const authData = localStorage.getItem("auth");
+  if (authData) {
+    try {
+      const { accessToken } = JSON.parse(authData);
+      if (accessToken) {
+        config.headers.Authorization = `Bearer ${accessToken}`;
+      }
+    } catch (e) {
+      console.error("Error parsing auth data", e);
+    }
   }
   return config;
-},
-  (error) => Promise.reject(error)
-)
+}, (error) => Promise.reject(error));
 
 api.interceptors.response.use(
   (response) => response,
@@ -27,6 +32,6 @@ api.interceptors.response.use(
     }
     return Promise.reject(error);
   }
-)
+);
 
-export default api
+export default api;
