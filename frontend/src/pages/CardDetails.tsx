@@ -1,11 +1,13 @@
 import Markdown from "react-markdown"
 import { useParams } from "react-router"
 import { useNavigate } from "react-router"
-import { ArrowLeft } from "lucide-react"
+import { ArrowLeft, Trash2, Edit } from "lucide-react"
 import { Button } from "../components/ui/Button"
 import { useEffect, useState } from "react"
 import { type VaultItem } from "../types/VaultTypes"
-import { getVaultItemById } from "../api/vaultApi"
+import { deleteItem, getVaultItemById } from "../api/vaultApi"
+import Modal from "../components/ui/Modal"
+import DeleteItemConfirmationForm from "../components/forms/DeleteItemConfirmationForm"
 
 interface Tag {
   _id: string;
@@ -18,6 +20,7 @@ const CardDetails = () => {
 
   const [item, setItem] = useState<VaultItem | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     const loadData = async () => {
@@ -39,11 +42,28 @@ const CardDetails = () => {
     loadData();
   }, [id])
 
+  const handleDeleteContent = async (id: string) => {
+    try {
+      const res = await deleteItem(id);
+      console.log(res.message);
+      navigate("/vault")
+    } catch (error) {
+      console.error("Error while deleting item: ", error);
+    }
+  }
+
   if (isLoading) return <div className="p-10 text-center">Loading...</div>;
   if (!item) return <div className="p-10 text-center">Item not found.</div>;
 
   return (
     <div className="p-5">
+      <Modal
+        children={<DeleteItemConfirmationForm onSubmit={() => handleDeleteContent(item._id)} onClose={() => setIsModalOpen(false)} />}
+        isOpen={isModalOpen}
+        title="Delete Content"
+        onClose={() => setIsModalOpen(false)}
+      />
+
       <Button variant="primary" size="md" text="Back to Dashboard" startIcon={ArrowLeft} onClick={() => navigate("/vault")} />
       <div className="mt-5 p-5 rounded-xl border-2 border-gray-400 flex flex-col gap-5 h-full">
         <h1 className="text-2xl font-bold underline">{item.title}</h1>
@@ -77,7 +97,7 @@ const CardDetails = () => {
             <>
               {item.tags.map((tag: Tag) => (
                 <div key={tag._id} className="bg-gray-300 rounded-3xl flex items-center p-2 py-1">
-                  <span className="text-sm text-center">{tag.title}</span>
+                  <span className="text-sm font-semibold text-center">{tag.title}</span>
                 </div>
               ))}
             </> : <p>N/A</p>}
@@ -99,6 +119,11 @@ const CardDetails = () => {
               minute: "2-digit",
             })}
           </span>
+        </div>
+
+        <div className="flex gap-2">
+          <Button variant="primary" size="md" text="Edit" startIcon={Edit} />
+          <Button variant="primary" size="md" text="Delete" startIcon={Trash2} onClick={() => setIsModalOpen(true)} />
         </div>
       </div>
     </div>

@@ -47,7 +47,7 @@ export const Card = (props: CardProps) => {
   const parsed = parseEmbed(props.link);
 
   return (
-    <div className="flex-col items-center p-5 rounded-xl font-inter shadow-lg bg-white min-w-80">
+    <div className="p-5 rounded-xl font-inter shadow-lg bg-white min-w-80">
       <div className="flex justify-between mb-5">
         <div className="flex justify-center items-center">
           <div className="text-gray-500 mr-2"><Icon className="flex justify-center items-center w-6 h-6 sm:w-7 sm:h-7" /></div>
@@ -79,11 +79,11 @@ export const Card = (props: CardProps) => {
         )}
       </div>
 
-      <div className="flex gap-2 mb-5 font-semibold flex-wrap">
+      <div className="flex gap-2 mb-5 flex-wrap">
         {props.tags?.map((tag) => {
           return (
             <div key={tag} className="bg-gray-300 rounded-3xl flex items-center p-2 py-1">
-              < span className="text-sm text-center" >{tag}</span>
+              <span className="text-sm font-semibold text-center" >{tag}</span>
             </div>
           )
         })}

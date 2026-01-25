@@ -31,12 +31,15 @@ const SearchFilterForm = ({ onClose }: SearchFilterFormProps) => {
     onClose();
   };
 
+  const inputStyles =
+    "w-full border-2 border-gray-200 rounded-xl px-4 py-2.5 focus:border-black focus:outline-none transition-colors placeholder:text-gray-400";
+
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4 w-full max-w-sm">
       <div className="flex flex-col gap-1">
         <label className="text-xs font-bold uppercase text-gray-500">Keywords</label>
         <input
-          className="p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className={inputStyles}
           placeholder="Search titles..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
@@ -46,7 +49,7 @@ const SearchFilterForm = ({ onClose }: SearchFilterFormProps) => {
       <div className="flex flex-col gap-1">
         <label className="text-xs font-bold uppercase text-gray-500">Tags</label>
         <input
-          className="p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className={inputStyles}
           placeholder="e.g. coding, react"
           value={tags}
           onChange={(e) => setTags(e.target.value)}
@@ -56,7 +59,7 @@ const SearchFilterForm = ({ onClose }: SearchFilterFormProps) => {
       <div className="flex flex-col gap-1">
         <label className="text-xs font-bold uppercase text-gray-500">Content Type</label>
         <select
-          className="p-2 border rounded-lg bg-white"
+          className={inputStyles}
           value={type}
           onChange={(e) => setType(e.target.value)}
         >

@@ -19,9 +19,10 @@ export interface CardGridItem extends Omit<CardProps, "handleShare" | "handleDel
 
 export interface CardGridProps {
   items: CardGridItem[];
+  onDelete: (id: string) => void;
 }
 
-const CardGrid = ({ items }: CardGridProps) => {
+const CardGrid = ({ items, onDelete }: CardGridProps) => {
   const navigate = useNavigate();
 
   return (
@@ -45,7 +46,7 @@ const CardGrid = ({ items }: CardGridProps) => {
             }}
             handleDelete={(e) => {
               e.stopPropagation();
-              console.log("delete", card.id);
+              onDelete(card.id);
             }}
           />
         </div>

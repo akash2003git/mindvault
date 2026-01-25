@@ -24,3 +24,8 @@ export const createItem = async (input: AddContentPayload): Promise<NewVaultItem
   const { data } = await api.post<NewVaultItemResponse>("/api/vault", input);
   return data;
 }
+
+export const deleteItem = async (id: string): Promise<VaultItemResponse> => {
+  const { data } = await api.delete<VaultItemResponse>(`/api/vault/${id}`);
+  return data;
+}
