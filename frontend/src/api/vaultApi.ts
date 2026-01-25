@@ -1,6 +1,8 @@
 import api from "./axiosInstance";
 import { type VaultResponse, type FilterParams, type VaultItemResponse, type NewVaultItemResponse } from "../types/VaultTypes.ts";
 import { type AddContentPayload } from "../components/forms/AddContentForm.tsx";
+import { type EditContentPayload } from "../components/forms/EditContentForm.tsx";
+import { type UpdateVaultItemResponse } from "../types/VaultTypes.ts";
 
 export const getVaultItems = async (params: FilterParams): Promise<VaultResponse> => {
   const { data } = await api.get<VaultResponse>(`/api/vault/`, {
@@ -29,3 +31,14 @@ export const deleteItem = async (id: string): Promise<VaultItemResponse> => {
   const { data } = await api.delete<VaultItemResponse>(`/api/vault/${id}`);
   return data;
 }
+
+export const updateItem = async (
+  input: EditContentPayload,
+  id: string
+): Promise<UpdateVaultItemResponse> => {
+  const { data } = await api.put<UpdateVaultItemResponse>(
+    `/api/vault/${id}`,
+    input
+  );
+  return data;
+};

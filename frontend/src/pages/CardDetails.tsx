@@ -8,6 +8,8 @@ import { type VaultItem } from "../types/VaultTypes"
 import { deleteItem, getVaultItemById } from "../api/vaultApi"
 import Modal from "../components/ui/Modal"
 import DeleteItemConfirmationForm from "../components/forms/DeleteItemConfirmationForm"
+import EditContentForm, { type EditContentPayload } from "../components/forms/EditContentForm"
+import { updateItem } from "../api/vaultApi"
 
 interface Tag {
   _id: string;
@@ -21,6 +23,7 @@ const CardDetails = () => {
   const [item, setItem] = useState<VaultItem | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOPen] = useState(false);
 
   useEffect(() => {
     const loadData = async () => {
@@ -52,6 +55,25 @@ const CardDetails = () => {
     }
   }
 
+  const handleEditContent = async (
+    payload: EditContentPayload,
+    id: string
+  ) => {
+    try {
+      setIsLoading(true);
+
+      const res = await updateItem(payload, id);
+
+      setItem(res.updatedItem);
+
+      setIsEditModalOPen(false);
+    } catch (error) {
+      console.error("Failed to update item:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   if (isLoading) return <div className="p-10 text-center">Loading...</div>;
   if (!item) return <div className="p-10 text-center">Item not found.</div>;
 
@@ -63,6 +85,22 @@ const CardDetails = () => {
         title="Delete Content"
         onClose={() => setIsModalOpen(false)}
       />
+
+
+      <Modal
+        isOpen={isEditModalOpen}
+        title="Edit Content"
+        onClose={() => setIsEditModalOPen(false)}
+      >
+        {item && (
+          <EditContentForm
+            initialData={item}
+            onSubmit={(payload) => handleEditContent(payload, item._id)}
+            onCancel={() => setIsEditModalOPen(false)}
+            onClose={() => setIsEditModalOPen(false)}
+          />
+        )}
+      </Modal>
 
       <Button variant="primary" size="md" text="Back to Dashboard" startIcon={ArrowLeft} onClick={() => navigate("/vault")} />
       <div className="mt-5 p-5 rounded-xl border-2 border-gray-400 flex flex-col gap-5 h-full">
@@ -122,7 +160,7 @@ const CardDetails = () => {
         </div>
 
         <div className="flex gap-2">
-          <Button variant="primary" size="md" text="Edit" startIcon={Edit} />
+          <Button variant="primary" size="md" text="Edit" startIcon={Edit} onClick={() => setIsEditModalOPen(true)} />
           <Button variant="primary" size="md" text="Delete" startIcon={Trash2} onClick={() => setIsModalOpen(true)} />
         </div>
       </div>

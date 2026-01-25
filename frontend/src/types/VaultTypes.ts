@@ -34,6 +34,11 @@ export type NewVaultItemResponse = {
   message: string;
 }
 
+export type UpdateVaultItemResponse = {
+  updatedItem: VaultItem;
+  message: string;
+};
+
 export type FilterParams = {
   page?: number;
   limit?: number;
