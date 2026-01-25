@@ -19,19 +19,19 @@
   min-width: unset !important;
 }
 
-.twitter-tweet,
-.twitter-tweet iframe {
-  max-width: 280px !important;
-  width: 280px !important;
-  min-width: unset !important;
-}
+/* .twitter-tweet, */
+/* .twitter-tweet iframe { */
+/*   max-width: 280px !important; */
+/*   width: 280px !important; */
+/*   min-width: unset !important; */
+/* } */
 
-.reddit-embed-bq,
-.reddit-embed-bq iframe {
-  max-width: 280px !important;
-  width: 280px !important;
-  min-width: unset !important;
-}
+/* .reddit-embed-bq, */
+/* .reddit-embed-bq iframe { */
+/*   max-width: 280px !important; */
+/*   width: 280px !important; */
+/*   min-width: unset !important; */
+/* } */
 
 @keyframes slide-up {
   from {
