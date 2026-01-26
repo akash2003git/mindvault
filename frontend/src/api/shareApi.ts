@@ -1,4 +1,5 @@
 import api from "./axiosInstance";
+import { ContentTypes } from "../types/ContentTypes";
 
 export interface ShareItemResponse {
   message: string;
@@ -17,6 +18,39 @@ export interface ShareVaultResponse {
   shareUrl: string;
   vaultPublic: true;
 }
+
+export interface SharedTag {
+  _id: string;
+  title: string;
+}
+
+export interface SharedVaultItem {
+  _id: string;
+  title: string;
+  description: string;
+  link?: string;
+  type: ContentTypes;
+  tags: SharedTag[];
+  userId: string;
+  isPublic: boolean;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}
+
+export interface SharedSingleResponse {
+  type: "single";
+  item: SharedVaultItem;
+}
+
+export interface SharedCollectionResponse {
+  type: "collection";
+  items: SharedVaultItem[];
+}
+
+export type SharedLinkResponse =
+  | SharedSingleResponse
+  | SharedCollectionResponse;
 
 export const shareItem = async (
   id: string
@@ -39,6 +73,15 @@ export const makeItemPrivate = async (
 export const shareVault = async (): Promise<ShareVaultResponse> => {
   const { data } = await api.post<ShareVaultResponse>(
     "/api/share/vault"
+  );
+  return data;
+};
+
+export const openSharedLink = async (
+  hash: string
+): Promise<SharedLinkResponse> => {
+  const { data } = await api.get<SharedLinkResponse>(
+    `/api/share/${hash}`
   );
   return data;
 };

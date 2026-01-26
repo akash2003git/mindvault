@@ -9,6 +9,7 @@ import VaultLayout from "./components/layout/VaultLayout";
 import PublicLayout from "./components/layout/PublicLayout";
 import { AuthProvider } from "./context/AuthProvider";
 import GuestRoute from "./components/layout/GuestRoute";
+import SharedVaultPage from "./components/shared/SharedVaultPage";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           {/* Public */}
           <Route element={<PublicLayout />}>
             <Route path="/" element={<LandingPage />} />
+            <Route path="/share/:hash" element={<SharedVaultPage />} />
             {/* {Guest Only} */}
             <Route element={<GuestRoute />}>
               <Route path="/login" element={<LoginPage />} />
