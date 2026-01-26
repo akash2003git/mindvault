@@ -28,8 +28,8 @@ const DeleteItemConfirmationForm = ({ onSubmit, onClose }: DeleteContentProps) =
       <div className="text-lg text-center mb-2">Are you sure you want to delete this item?</div>
       {error ? <p className="text-red-600">Error while deleting item!</p> : <></>}
       {isLoading ? <p>Deleting content...</p> : <></>}
-      <form onSubmit={handleSubmit} className="flex gap-2">
-        <Button variant="primary" size="md" text="Yes" onClick={() => { }} disabled={isLoading} />
+      <form onSubmit={handleSubmit} className="flex justify-end gap-2">
+        <Button variant="secondary" size="md" text="Yes" onClick={() => { }} disabled={isLoading} />
         <Button variant="primary" size="md" text="No" onClick={onClose} disabled={isLoading} />
       </form>
     </div>

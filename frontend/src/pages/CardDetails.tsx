@@ -1,76 +1,110 @@
-import Markdown from "react-markdown"
-import { useParams } from "react-router"
-import { useNavigate } from "react-router"
-import { ArrowLeft, Trash2, Edit } from "lucide-react"
-import { Button } from "../components/ui/Button"
-import { useEffect, useState } from "react"
-import { type VaultItem } from "../types/VaultTypes"
-import { deleteItem, getVaultItemById } from "../api/vaultApi"
-import Modal from "../components/ui/Modal"
-import DeleteItemConfirmationForm from "../components/forms/DeleteItemConfirmationForm"
-import EditContentForm, { type EditContentPayload } from "../components/forms/EditContentForm"
-import { updateItem } from "../api/vaultApi"
-
-interface Tag {
-  _id: string;
-  title: string;
-}
+import Markdown from "react-markdown";
+import { useParams, useNavigate } from "react-router";
+import { ArrowLeft, Trash2, Edit, Share2, EyeOff } from "lucide-react";
+import { Button } from "../components/ui/Button";
+import { useEffect, useState } from "react";
+import { type VaultItem } from "../types/VaultTypes";
+import {
+  deleteItem,
+  getVaultItemById,
+  updateItem,
+} from "../api/vaultApi";
+import Modal from "../components/ui/Modal";
+import DeleteItemConfirmationForm from "../components/forms/DeleteItemConfirmationForm";
+import EditContentForm, { type EditContentPayload } from "../components/forms/EditContentForm";
+import { shareItem, makeItemPrivate } from "../api/shareApi";
 
 const CardDetails = () => {
   const navigate = useNavigate();
   const { id } = useParams();
 
-  const [item, setItem] = useState<VaultItem | undefined>(undefined);
+  const [item, setItem] = useState<VaultItem>();
   const [isLoading, setIsLoading] = useState(true);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isEditModalOpen, setIsEditModalOPen] = useState(false);
+
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [isMakePrivateModalOpen, setIsMakePrivateModalOpen] = useState(false);
+
+  const [shareUrl, setShareUrl] = useState<string | null>(null);
+  const [isActionLoading, setIsActionLoading] = useState(false);
 
   useEffect(() => {
     const loadData = async () => {
-      setIsLoading(true);
+      if (!id) return;
 
       try {
-        if (!id) return
+        setIsLoading(true);
         const res = await getVaultItemById(id);
-        if (res && res.item) {
-          setItem(res.item);
-        }
-      } catch (error) {
-        console.error("Failed to fetch item: ", error);
+        setItem(res.item);
+      } catch (err) {
+        console.error("Failed to fetch item:", err);
       } finally {
         setIsLoading(false);
       }
-    }
+    };
 
     loadData();
-  }, [id])
+  }, [id]);
 
-  const handleDeleteContent = async (id: string) => {
+  const handleDeleteContent = async () => {
+    if (!item) return;
+
     try {
-      const res = await deleteItem(id);
-      console.log(res.message);
-      navigate("/vault")
-    } catch (error) {
-      console.error("Error while deleting item: ", error);
+      await deleteItem(item._id);
+      navigate("/vault");
+    } catch (err) {
+      console.error("Delete failed:", err);
     }
-  }
+  };
 
   const handleEditContent = async (
     payload: EditContentPayload,
-    id: string
+    itemId: string
   ) => {
     try {
       setIsLoading(true);
-
-      const res = await updateItem(payload, id);
-
+      const res = await updateItem(payload, itemId);
       setItem(res.updatedItem);
-
-      setIsEditModalOPen(false);
-    } catch (error) {
-      console.error("Failed to update item:", error);
+      setIsEditModalOpen(false);
+    } catch (err) {
+      console.error("Edit failed:", err);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleShare = async () => {
+    if (!item) return;
+
+    try {
+      setIsActionLoading(true);
+      const res = await shareItem(item._id);
+
+      setItem(prev => prev ? { ...prev, isPublic: true } : prev);
+      setShareUrl(res.shareUrl);
+      setIsShareModalOpen(true);
+    } catch (err) {
+      console.error("Share failed:", err);
+    } finally {
+      setIsActionLoading(false);
+    }
+  };
+
+  const handleMakePrivate = async () => {
+    if (!item) return;
+
+    try {
+      setIsActionLoading(true);
+      await makeItemPrivate(item._id);
+
+      setItem(prev => prev ? { ...prev, isPublic: false } : prev);
+      setShareUrl(null);
+      setIsMakePrivateModalOpen(false);
+    } catch (err) {
+      console.error("Make private failed:", err);
+    } finally {
+      setIsActionLoading(false);
     }
   };
 
@@ -79,31 +113,95 @@ const CardDetails = () => {
 
   return (
     <div className="p-5">
+      {/* Delete */}
       <Modal
-        children={<DeleteItemConfirmationForm onSubmit={() => handleDeleteContent(item._id)} onClose={() => setIsModalOpen(false)} />}
-        isOpen={isModalOpen}
+        isOpen={isDeleteModalOpen}
         title="Delete Content"
-        onClose={() => setIsModalOpen(false)}
-      />
+        onClose={() => setIsDeleteModalOpen(false)}
+      >
+        <DeleteItemConfirmationForm
+          onSubmit={handleDeleteContent}
+          onClose={() => setIsDeleteModalOpen(false)}
+        />
+      </Modal>
 
-
+      {/* Edit */}
       <Modal
         isOpen={isEditModalOpen}
         title="Edit Content"
-        onClose={() => setIsEditModalOPen(false)}
+        onClose={() => setIsEditModalOpen(false)}
       >
-        {item && (
-          <EditContentForm
-            initialData={item}
-            onSubmit={(payload) => handleEditContent(payload, item._id)}
-            onCancel={() => setIsEditModalOPen(false)}
-            onClose={() => setIsEditModalOPen(false)}
-          />
-        )}
+        <EditContentForm
+          initialData={item}
+          onSubmit={(payload) => handleEditContent(payload, item._id)}
+          onCancel={() => setIsEditModalOpen(false)}
+          onClose={() => setIsEditModalOpen(false)}
+        />
       </Modal>
 
-      <Button variant="primary" size="md" text="Back to Dashboard" startIcon={ArrowLeft} onClick={() => navigate("/vault")} />
-      <div className="mt-5 p-5 rounded-xl border-2 border-gray-400 flex flex-col gap-5 h-full">
+      {/* Make Private */}
+      <Modal
+        isOpen={isMakePrivateModalOpen}
+        title="Make Item Private"
+        onClose={() => setIsMakePrivateModalOpen(false)}
+      >
+        <p className="text-gray-700 mb-4">
+          This will disable the share link. Existing links will stop working.
+        </p>
+        <div className="flex justify-end gap-2">
+          <Button
+            size="md"
+            variant="secondary"
+            text="Cancel"
+            onClick={() => setIsMakePrivateModalOpen(false)}
+          />
+          <Button
+            size="md"
+            variant="primary"
+            loading={isActionLoading}
+            text="Make Private"
+            onClick={handleMakePrivate}
+          />
+        </div>
+      </Modal>
+
+      {/* Share */}
+      <Modal
+        isOpen={isShareModalOpen}
+        title="Share Item"
+        onClose={() => setIsShareModalOpen(false)}
+      >
+        <input
+          readOnly
+          value={shareUrl ?? ""}
+          className="mb-4 w-full border-2 border-gray-200 rounded-xl px-4 py-2.5 focus:border-black focus:outline-none transition-colors placeholder:text-gray-400"
+        />
+        <div className="flex justify-end gap-2">
+          <Button
+            size="md"
+            variant="secondary"
+            text="Close"
+            onClick={() => setIsShareModalOpen(false)}
+          />
+          <Button
+            size="md"
+            variant="primary"
+            text="Copy link"
+            onClick={() => navigator.clipboard.writeText(shareUrl ?? "")}
+          />
+        </div>
+      </Modal>
+
+      <Button
+        variant="primary"
+        size="md"
+        text="Back to Dashboard"
+        startIcon={ArrowLeft}
+        onClick={() => navigate("/vault")}
+      />
+
+      {/* CONTENT */}
+      <div className="mt-5 p-5 rounded-xl border-2 border-gray-400 flex flex-col gap-5">
         <h1 className="text-2xl font-bold underline">{item.title}</h1>
 
         <div className="prose bg-gray-50 p-5 rounded-xl">
@@ -133,7 +231,7 @@ const CardDetails = () => {
           <span className="font-semibold">Tags: </span>
           {item.tags.length > 0 ?
             <>
-              {item.tags.map((tag: Tag) => (
+              {item.tags.map((tag: { _id: string, title: string }) => (
                 <div key={tag._id} className="bg-gray-300 rounded-3xl flex items-center p-2 py-1">
                   <span className="text-sm font-semibold text-center">{tag.title}</span>
                 </div>
@@ -159,13 +257,51 @@ const CardDetails = () => {
           </span>
         </div>
 
+
         <div className="flex gap-2">
-          <Button variant="primary" size="md" text="Edit" startIcon={Edit} onClick={() => setIsEditModalOPen(true)} />
-          <Button variant="primary" size="md" text="Delete" startIcon={Trash2} onClick={() => setIsModalOpen(true)} />
+          <span className="font-semibold">Visibility:</span>
+          <span>{item.isPublic ? "Public" : "Private"}</span>
+        </div>
+
+        <div className="flex gap-2">
+          <Button
+            variant="primary"
+            size="md"
+            text="Share"
+            startIcon={Share2}
+            onClick={handleShare}
+            loading={isActionLoading}
+          />
+
+          {item.isPublic && (
+            <Button
+              variant="primary"
+              size="md"
+              text="Make Private"
+              startIcon={EyeOff}
+              onClick={() => setIsMakePrivateModalOpen(true)}
+            />
+          )}
+
+          <Button
+            variant="primary"
+            size="md"
+            text="Edit"
+            startIcon={Edit}
+            onClick={() => setIsEditModalOpen(true)}
+          />
+
+          <Button
+            variant="primary"
+            size="md"
+            text="Delete"
+            startIcon={Trash2}
+            onClick={() => setIsDeleteModalOpen(true)}
+          />
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default CardDetails
+export default CardDetails;
