@@ -3,7 +3,7 @@ import { Plus, Share2, X } from "lucide-react"
 import { Button } from "../ui/Button"
 import { useState } from "react";
 import Pagination from "../ui/Pagination";
-import CardGrid from "../ui/CardGrid";
+import { CardGrid } from "../ui/CardGrid";
 import Modal from "../ui/Modal";
 import AddContentForm, { type AddContentPayload } from "../forms/AddContentForm";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -11,6 +11,7 @@ import { getVaultItems, createItem } from "../../api/vaultApi";
 import { ContentTypes } from "../../types/ContentTypes";
 import { deleteItem } from "../../api/vaultApi";
 import DeleteItemConfirmationForm from "../forms/DeleteItemConfirmationForm";
+import { shareItem } from "../../api/shareApi";
 
 export interface CardProps {
   title: string;
@@ -42,6 +43,11 @@ const Dashboard = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [items, setItems] = useState<CardGridItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+
+
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [shareUrl, setShareUrl] = useState<string | null>(null);
+  const [isShareLoading, setIsShareLoading] = useState(false);
 
   const hasFilters = !!(searchParams.get("search") || searchParams.get("type") || searchParams.get("tags"));
 
@@ -87,6 +93,21 @@ const Dashboard = () => {
       setDeleteTargetId(null);
     } catch (error) {
       console.error("Failed to delete item:", error);
+    }
+  };
+
+  const handleShareItem = async (id: string) => {
+    try {
+      setIsShareLoading(true);
+
+      const res = await shareItem(id);
+
+      setShareUrl(res.shareUrl);
+      setIsShareModalOpen(true);
+    } catch (error) {
+      console.error("Failed to share item:", error);
+    } finally {
+      setIsShareLoading(false);
     }
   };
 
@@ -151,6 +172,34 @@ const Dashboard = () => {
         />
       </Modal>
 
+      {/* Share Item Modal*/}
+      <Modal
+        isOpen={isShareModalOpen}
+        title="Share Item"
+        onClose={() => setIsShareModalOpen(false)}
+      >
+        <input
+          readOnly
+          value={shareUrl ?? ""}
+          className="mb-4 w-full border-2 border-gray-200 rounded-xl px-4 py-2.5 focus:border-black focus:outline-none transition-colors placeholder:text-gray-400"
+        />
+        <div className="flex justify-end gap-2">
+          <Button
+            size="md"
+            variant="secondary"
+            text="Close"
+            onClick={() => setIsShareModalOpen(false)}
+          />
+          <Button
+            size="md"
+            variant="primary"
+            text="Copy link"
+            onClick={() => navigator.clipboard.writeText(shareUrl ?? "")}
+          />
+        </div>
+      </Modal>
+
+
       {/* Main Component */}
       <div className="bg-white min-h-screen">
         <div className="flex items-center justify-between p-5">
@@ -189,7 +238,7 @@ const Dashboard = () => {
         {isLoading ? (
           <div className="flex justify-center p-10">Loading...</div>
         ) : items.length > 0 ? (
-          <CardGrid items={items} onDelete={handleDeleteRequest} />
+          <CardGrid items={items} onDelete={handleDeleteRequest} onShare={handleShareItem} />
         ) : (
           <div className="text-center p-20 text-gray-500 flex flex-col justify-center">
             <p className="text-xl">No items found.</p>
