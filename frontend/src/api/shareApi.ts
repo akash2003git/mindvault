@@ -12,6 +12,12 @@ export interface ToggleItemPrivacyResponse {
   shareUrl: string | null;
 }
 
+export interface ShareVaultResponse {
+  message: string;
+  shareUrl: string;
+  vaultPublic: true;
+}
+
 export const shareItem = async (
   id: string
 ): Promise<ShareItemResponse> => {
@@ -26,6 +32,13 @@ export const makeItemPrivate = async (
 ): Promise<ToggleItemPrivacyResponse> => {
   const { data } = await api.patch<ToggleItemPrivacyResponse>(
     `/api/share/item/${id}/toggle`
+  );
+  return data;
+};
+
+export const shareVault = async (): Promise<ShareVaultResponse> => {
+  const { data } = await api.post<ShareVaultResponse>(
+    "/api/share/vault"
   );
   return data;
 };

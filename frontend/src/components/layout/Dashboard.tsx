@@ -11,7 +11,7 @@ import { getVaultItems, createItem } from "../../api/vaultApi";
 import { ContentTypes } from "../../types/ContentTypes";
 import { deleteItem } from "../../api/vaultApi";
 import DeleteItemConfirmationForm from "../forms/DeleteItemConfirmationForm";
-import { shareItem } from "../../api/shareApi";
+import { shareItem, shareVault } from "../../api/shareApi";
 
 export interface CardProps {
   title: string;
@@ -44,10 +44,13 @@ const Dashboard = () => {
   const [items, setItems] = useState<CardGridItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [shareUrl, setShareUrl] = useState<string | null>(null);
   const [isShareLoading, setIsShareLoading] = useState(false);
+
+  const [isVaultShareModalOpen, setIsVaultShareModalOpen] = useState(false);
+  const [vaultShareUrl, setVaultShareUrl] = useState<string | null>(null);
+  const [isVaultShareLoading, setIsVaultShareLoading] = useState(false);
 
   const hasFilters = !!(searchParams.get("search") || searchParams.get("type") || searchParams.get("tags"));
 
@@ -108,6 +111,22 @@ const Dashboard = () => {
       console.error("Failed to share item:", error);
     } finally {
       setIsShareLoading(false);
+    }
+  };
+
+
+  const handleShareVault = async () => {
+    try {
+      setIsVaultShareLoading(true);
+
+      const res = await shareVault();
+
+      setVaultShareUrl(res.shareUrl);
+      setIsVaultShareModalOpen(true);
+    } catch (error) {
+      console.error("Failed to share vault:", error);
+    } finally {
+      setIsVaultShareLoading(false);
     }
   };
 
@@ -199,6 +218,40 @@ const Dashboard = () => {
         </div>
       </Modal>
 
+      {/* Share Vault Modal */}
+      <Modal
+        isOpen={isVaultShareModalOpen}
+        title="Share Vault"
+        onClose={() => setIsVaultShareModalOpen(false)}
+      >
+        <p className="mb-4 text-gray-700">
+          All <span className="font-semibold">public items</span> in your vault will be shared using this link.
+        </p>
+
+        <input
+          readOnly
+          value={vaultShareUrl ?? ""}
+          className="mb-4 w-full border-2 border-gray-200 rounded-xl px-4 py-2.5
+               focus:border-black focus:outline-none transition-colors
+               placeholder:text-gray-400"
+        />
+
+        <div className="flex justify-end gap-2">
+          <Button
+            size="md"
+            variant="secondary"
+            text="Close"
+            onClick={() => setIsVaultShareModalOpen(false)}
+          />
+          <Button
+            size="md"
+            variant="primary"
+            loading={isVaultShareLoading}
+            text="Copy link"
+            onClick={() => navigator.clipboard.writeText(vaultShareUrl ?? "")}
+          />
+        </div>
+      </Modal>
 
       {/* Main Component */}
       <div className="bg-white min-h-screen">
@@ -218,7 +271,7 @@ const Dashboard = () => {
                 onClick={clearFilters}
               />
             )}
-            <Button variant="secondary" text="Share Vault" size="md" startIcon={Share2} onClick={() => console.log("share")} />
+            <Button variant="secondary" text="Share Vault" size="md" startIcon={Share2} onClick={handleShareVault} />
             <Button variant="primary" text="Add Content" size="md" startIcon={Plus} onClick={() => setIsModalOpen(true)} />
           </div>
           <div className="md:hidden flex gap-2 justify-between items-center">
@@ -230,7 +283,7 @@ const Dashboard = () => {
                 onClick={clearFilters}
               />
             )}
-            <Button variant="secondary" size="sm" startIcon={Share2} onClick={() => console.log("share")} />
+            <Button variant="secondary" size="sm" startIcon={Share2} onClick={handleShareVault} />
             <Button variant="primary" size="sm" startIcon={Plus} onClick={() => setIsModalOpen(true)} />
           </div>
         </div>
