@@ -46,7 +46,7 @@ const Dashboard = () => {
 
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [shareUrl, setShareUrl] = useState<string | null>(null);
-  const [isShareLoading, setIsShareLoading] = useState(false);
+  const [, setIsShareLoading] = useState(false);
 
   const [isVaultShareModalOpen, setIsVaultShareModalOpen] = useState(false);
   const [vaultShareUrl, setVaultShareUrl] = useState<string | null>(null);
