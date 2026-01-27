@@ -17,7 +17,7 @@ const Footer = () => {
         {/* Social Links */}
         <div className="flex items-center gap-4">
           <a
-            href="https://github.com/akash2003git/"
+            href="https://github.com/akash2003git/mindvault"
             target="_blank"
             rel="noopener noreferrer"
             className="hover:text-black transition"
