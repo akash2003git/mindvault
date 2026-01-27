@@ -1,5 +1,7 @@
 # MindVault
 
+**Live Demo:** [https://mindvault-akash.vercel.app/](https://mindvault-akash.vercel.app/)
+
 MindVault is a personal knowledge management app — your **second brain** for saving, organizing, and sharing links, notes, videos, tweets, and ideas in one place.
 It helps you capture information effortlessly, retrieve it instantly, and keep your digital knowledge structured and searchable.
 
@@ -24,6 +26,7 @@ It helps you capture information effortlessly, retrieve it instantly, and keep y
 ## Features
 
 * Save content from multiple sources:
+
   * Articles
   * Videos
   * Tweets
@@ -88,7 +91,11 @@ Run the backend:
 npm run dev
 ```
 
-Backend will start on its configured port (default: 5000).
+Backend will start on its configured port (default: 3000).
+
+```
+http://localhost:3000
+```
 
 ---
 
