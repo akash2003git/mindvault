@@ -263,7 +263,7 @@ const CardDetails = () => {
           <span>{item.isPublic ? "Public" : "Private"}</span>
         </div>
 
-        <div className="flex gap-2">
+        <div className="mt-5 hidden md:flex gap-2 justify-end">
           <Button
             variant="primary"
             size="md"
@@ -295,6 +295,40 @@ const CardDetails = () => {
             variant="primary"
             size="md"
             text="Delete"
+            startIcon={Trash2}
+            onClick={() => setIsDeleteModalOpen(true)}
+          />
+        </div>
+
+
+        <div className="mt-5 flex justify-end md:hidden gap-2">
+          <Button
+            variant="primary"
+            size="md"
+            startIcon={Share2}
+            onClick={handleShare}
+            loading={isActionLoading}
+          />
+
+          {item.isPublic && (
+            <Button
+              variant="primary"
+              size="md"
+              startIcon={EyeOff}
+              onClick={() => setIsMakePrivateModalOpen(true)}
+            />
+          )}
+
+          <Button
+            variant="primary"
+            size="md"
+            startIcon={Edit}
+            onClick={() => setIsEditModalOpen(true)}
+          />
+
+          <Button
+            variant="primary"
+            size="md"
             startIcon={Trash2}
             onClick={() => setIsDeleteModalOpen(true)}
           />
